@@ -569,7 +569,7 @@ function renderModule(bid,m){
     case 'note-rapide':
       return '<div class="module-wrapper"><button class="module-remove" onclick="removeModule(\''+bid+'\','+m.id+')">✕</button><div class="card"><div class="card-title">📝 Note rapide</div><textarea class="form-textarea" style="width:100%;min-height:100px" placeholder="Écris ici..." onchange="saveQuickNote(\''+bid+'\','+m.id+',this.value)" id="qn-'+m.id+'">'+(m.quickNote||'')+'</textarea></div></div>';
     case 'calendrier-ca':
-      return '<div class="module-wrapper"><button class="module-remove" onclick="removeModule(''+bid+'','+m.id+')">✕</button>'+renderCalendar(bName,m.id)+'</div>';
+      return '<div class="module-wrapper"><button class="module-remove" onclick="removeModule(\''+bid+'\','+m.id+')">✕</button>'+renderCalendar(bName,m.id)+'</div>';
     default: return '';
   }
 }
