@@ -183,7 +183,7 @@ tr:last-child td{border-bottom:none}
         <div class="topbar-sub" id="topbar-sub">Vue d ensemble</div>
       </div>
       <div class="topbar-actions">
-        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-settings')">&#9881;</button>
+        <button class="btn btn-ghost btn-sm" onclick="openSettings()">&#9881;</button>
         <button class="btn btn-ghost btn-sm" onclick="openModal('modal-task')">+ Tache</button>
         <button class="btn btn-ghost btn-sm" onclick="openModal('modal-client')">+ Client</button>
         <button class="btn btn-primary btn-sm" onclick="openModal('modal-finance')">+ Transaction</button>
@@ -571,13 +571,22 @@ function deleteTask(i) { state.taches.splice(i,1); save(); updateAll(); }
 function deleteTrade(i) { state.trading.splice(i,1); save(); if(currentBusiness) showPage(currentBusiness, null); }
 
 function openSettings() {
-  state.bNames.forEach(function(n,i) { document.getElementById('s-b'+(i+1)).value = n; });
-  state.bTypes.forEach(function(t,i) { document.getElementById('s-t'+(i+1)).value = t; });
+  state.bNames.forEach(function(n,i) {
+    var el = document.getElementById('s-b'+(i+1));
+    if (el) el.value = n;
+  });
+  state.bTypes.forEach(function(t,i) {
+    var el = document.getElementById('s-t'+(i+1));
+    if (el) el.value = t;
+  });
   var extraHtml = '';
   if (state.extraBiz.length > 0) {
-    extraHtml += '<p style="font-size:12px;color:var(--text-muted);text-transform:uppercase;font-weight:600;margin:1rem 0 .5rem">Business supplementaires</p>';
+    extraHtml += '<p style="font-size:12px;color:var(--text-muted);text-transform:uppercase;font-weight:600;margin:1.25rem 0 .75rem;padding-top:1rem;border-top:1px solid var(--border)">Business supplementaires</p>';
     state.extraBiz.forEach(function(b, i) {
-      extraHtml += '<div class="form-row" style="margin-bottom:8px"><div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="s-eb-name-'+i+'" value="'+b.name+'"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-eb-type-'+i+'" value="'+b.type+'"></div></div>';
+      extraHtml += '<div class="form-row" style="margin-bottom:10px">';
+      extraHtml += '<div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="s-eb-name-'+i+'" value="' + b.name.replace(/"/g, '&quot;') + '"></div>';
+      extraHtml += '<div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-eb-type-'+i+'" value="' + b.type.replace(/"/g, '&quot;') + '"></div>';
+      extraHtml += '</div>';
     });
   }
   document.getElementById('s-extra-businesses').innerHTML = extraHtml;
@@ -1215,6 +1224,7 @@ function init() {
       <strong id="dash-cal-total" style="font-size:16px"></strong>
     </div>
     <p style="font-size:12px;color:var(--text-muted);margin-top:8px">Clique sur un jour pour entrer ton revenu ou depense</p>
+    <div style="margin-top:1rem;text-align:right"><button class="btn btn-ghost" onclick="closeModal('modal-dashboard-cal')">Fermer</button></div>
   </div>
 </div>
 
