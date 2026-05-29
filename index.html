@@ -161,6 +161,7 @@ tr:last-child td{border-bottom:none}
     <div class="topbar">
       <div><div class="topbar-title" id="topbar-title">Tableau de bord</div><div class="topbar-sub" id="topbar-sub">Vue d'ensemble de tous tes business</div></div>
       <div class="topbar-actions">
+        <button class="btn btn-ghost" onclick="openSettings()">⚙️</button>
         <button class="btn btn-ghost" onclick="openModal('modal-task')">+ Tâche</button>
         <button class="btn btn-ghost" onclick="openModal('modal-client')">+ Client</button>
         <button class="btn btn-primary" onclick="openModal('modal-finance')">+ Transaction</button>
@@ -334,7 +335,114 @@ function renderBusiness(bid){
   document.getElementById('bpc-'+bid).innerHTML = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem"><div style="width:48px;height:48px;border-radius:12px;background:#EEEDFE;display:flex;align-items:center;justify-content:center;font-size:22px">'+emojis[n]+'</div><div><div style="font-size:20px;font-weight:600">'+bName+'</div><div style="color:var(--text-muted);font-size:13px">'+types[n]+'</div></div></div><div class="metrics-grid" style="grid-template-columns:repeat(3,1fr)"><div class="metric-card"><div class="metric-label">Revenus</div><div class="metric-value">'+mr.toLocaleString('fr-FR')+' €</div></div><div class="metric-card"><div class="metric-label">Dépenses</div><div class="metric-value">'+md.toLocaleString('fr-FR')+' €</div></div><div class="metric-card"><div class="metric-label">Clients</div><div class="metric-value">'+mc.length+'</div></div></div><div class="grid-2"><div class="card"><div class="card-title">Clients</div>'+(mc.length===0?'<div class="empty-state">Aucun client</div>':'<table><thead><tr><th>Nom</th><th>Statut</th><th>Valeur</th></tr></thead><tbody>'+mc.map(function(c){return '<tr><td>'+c.nom+'</td><td><span class="badge '+sBadge[c.statut]+'">'+c.statut+'</span></td><td>'+c.valeur.toLocaleString('fr-FR')+' €</td></tr>';}).join('')+'</tbody></table>')+'</div><div class="card"><div class="card-title">Tâches</div>'+(mt.length===0?'<div class="empty-state">Aucune tâche</div>':mt.map(function(t){var i=state.taches.indexOf(t);return '<div class="task-item"><div class="task-check '+(t.done?'done':'')+'" onclick="toggleTask('+i+')"></div><span class="task-name '+(t.done?'done':'')+'">'+t.nom+'</span><span class="badge '+pBadge[t.priorite]+'">'+t.priorite+'</span></div>';}).join(''))+'</div></div>';
 }
 
+
+var bNames = JSON.parse(localStorage.getItem('bNames') || '["Business 1","Business 2","Business 3","Business 4"]');
+var bTypes = JSON.parse(localStorage.getItem('bTypes') || '["E-commerce","E-commerce","Freelance","Services"]');
+
+function openSettings() {
+  document.getElementById('s-b1').value = bNames[0];
+  document.getElementById('s-b2').value = bNames[1];
+  document.getElementById('s-b3').value = bNames[2];
+  document.getElementById('s-b4').value = bNames[3];
+  document.getElementById('s-t1').value = bTypes[0];
+  document.getElementById('s-t2').value = bTypes[1];
+  document.getElementById('s-t3').value = bTypes[2];
+  document.getElementById('s-t4').value = bTypes[3];
+  openModal('modal-settings');
+}
+
+function saveSettings() {
+  bNames = [
+    document.getElementById('s-b1').value || 'Business 1',
+    document.getElementById('s-b2').value || 'Business 2',
+    document.getElementById('s-b3').value || 'Business 3',
+    document.getElementById('s-b4').value || 'Business 4'
+  ];
+  bTypes = [
+    document.getElementById('s-t1').value || 'E-commerce',
+    document.getElementById('s-t2').value || 'E-commerce',
+    document.getElementById('s-t3').value || 'Freelance',
+    document.getElementById('s-t4').value || 'Services'
+  ];
+  localStorage.setItem('bNames', JSON.stringify(bNames));
+  localStorage.setItem('bTypes', JSON.stringify(bTypes));
+  applyNames();
+  closeModal('modal-settings');
+}
+
+function applyNames() {
+  // Update sidebar
+  var sidebarItems = document.querySelectorAll('.sidebar-item');
+  sidebarItems.forEach(function(item) {
+    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'b1'")) {
+      item.innerHTML = '<div class="bdot" style="background:#7F77DD"></div> ' + bNames[0];
+    } else if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'b2'")) {
+      item.innerHTML = '<div class="bdot" style="background:#1D9E75"></div> ' + bNames[1];
+    } else if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'b3'")) {
+      item.innerHTML = '<div class="bdot" style="background:#D85A30"></div> ' + bNames[2];
+    } else if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'b4'")) {
+      item.innerHTML = '<div class="bdot" style="background:#378ADD"></div> ' + bNames[3];
+    }
+  });
+
+  // Update pages info
+  pagesInfo['b1'] = bNames[0];
+  pagesInfo['b2'] = bNames[1];
+  pagesInfo['b3'] = bNames[2];
+  pagesInfo['b4'] = bNames[3];
+  subsInfo['b1'] = bTypes[0];
+  subsInfo['b2'] = bTypes[1];
+  subsInfo['b3'] = bTypes[2];
+  subsInfo['b4'] = bTypes[3];
+
+  // Update dashboard business cards
+  var bcNames = document.querySelectorAll('.bcard-name');
+  var bcTypes = document.querySelectorAll('.bcard-type');
+  for(var i=0; i<bcNames.length; i++) {
+    bcNames[i].textContent = bNames[i];
+    bcTypes[i].textContent = bTypes[i];
+  }
+
+  // Update selects in modals
+  var selects = ['f-business','c-business','t-business','d-business'];
+  selects.forEach(function(sid) {
+    var sel = document.getElementById(sid);
+    if(sel) {
+      for(var i=0; i<sel.options.length; i++) {
+        sel.options[i].text = bNames[i];
+        sel.options[i].value = bNames[i];
+      }
+    }
+  });
+
+  updateAll();
+}
+
+// Apply names on load
+applyNames();
+
 document.querySelectorAll('.modal-overlay').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open');});});
 </script>
+
+<div id="modal-settings" class="modal-overlay">
+  <div class="modal" style="width:500px">
+    <div class="modal-title">⚙️ Paramètres <button class="modal-close" onclick="closeModal('modal-settings')">✕</button></div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:1rem;text-transform:uppercase;font-weight:600;letter-spacing:0.04em">Noms des business</p>
+    <div class="form-group"><label class="form-label">Business 1</label><input class="form-input" id="s-b1" placeholder="Business 1"></div>
+    <div class="form-group"><label class="form-label">Business 2</label><input class="form-input" id="s-b2" placeholder="Business 2"></div>
+    <div class="form-group"><label class="form-label">Business 3</label><input class="form-input" id="s-b3" placeholder="Business 3"></div>
+    <div class="form-group"><label class="form-label">Business 4</label><input class="form-input" id="s-b4" placeholder="Business 4"></div>
+    <p style="font-size:12px;color:var(--text-muted);margin:1rem 0 0.5rem;text-transform:uppercase;font-weight:600;letter-spacing:0.04em">Types d'activité</p>
+    <div class="form-group"><label class="form-label">Type Business 1</label><input class="form-input" id="s-t1" placeholder="E-commerce"></div>
+    <div class="form-group"><label class="form-label">Type Business 2</label><input class="form-input" id="s-t2" placeholder="E-commerce"></div>
+    <div class="form-group"><label class="form-label">Type Business 3</label><input class="form-input" id="s-t3" placeholder="Freelance"></div>
+    <div class="form-group"><label class="form-label">Type Business 4</label><input class="form-input" id="s-t4" placeholder="Services"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-settings')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveSettings()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
