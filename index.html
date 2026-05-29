@@ -171,23 +171,6 @@ canvas{width:100%!important}
 .trading-row-actions{opacity:0;transition:opacity .15s}
 .trading-table tr:hover .trading-row-actions{opacity:1}
 
-/* CALENDAR */
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:8px}
-.cal-header{font-size:10px;font-weight:600;color:var(--text-muted);text-align:center;padding:4px 0;text-transform:uppercase}
-.cal-day{border-radius:6px;padding:4px;min-height:52px;border:1px solid var(--border);cursor:pointer;transition:border-color .15s;position:relative}
-.cal-day:hover{border-color:var(--accent)}
-.cal-day.today{border-color:var(--accent);background:#F0EFFE}
-.cal-day.other-month{opacity:.4}
-.cal-day-num{font-size:11px;font-weight:600;color:var(--text-muted)}
-.cal-day-amount{font-size:12px;font-weight:600;margin-top:2px}
-.cal-day-amount.positive{color:var(--green)}
-.cal-day-amount.negative{color:var(--red)}
-.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.cal-nav-btn{background:none;border:1.5px solid var(--border);border-radius:var(--radius-xs);padding:3px 8px;cursor:pointer;font-size:13px}
-.cal-nav-btn:hover{background:var(--bg)}
-.cal-month-title{font-size:13px;font-weight:600}
-
-/* EMPTY STATE */
 /* EMPTY STATE */
 .empty-state{text-align:center;padding:2rem;color:var(--text-muted);font-size:13px}
 .empty-icon{font-size:32px;margin-bottom:8px}
@@ -344,7 +327,6 @@ canvas{width:100%!important}
       <div class="module-option" onclick="addModule('clients-list')"><div class="module-option-icon">👥</div><div class="module-option-name">Liste clients</div></div>
       <div class="module-option" onclick="addModule('revenus-bar')"><div class="module-option-icon">📊</div><div class="module-option-name">Barres revenus</div></div>
       <div class="module-option" onclick="addModule('note-rapide')"><div class="module-option-icon">📝</div><div class="module-option-name">Note rapide</div></div>
-      <div class="module-option" onclick="addModule('calendrier-ca')"><div class="module-option-icon">📅</div><div class="module-option-name">Calendrier CA</div></div>
     </div>
   </div>
 </div>
@@ -386,7 +368,6 @@ var state={
   taches:JSON.parse(localStorage.getItem('taches')||'[]'),
   notes:JSON.parse(localStorage.getItem('notes')||'[]'),
   trading:JSON.parse(localStorage.getItem('trading')||'[]'),
-  chartData:JSON.parse(localStorage.getItem('chartData')||'{}'),
   bNames:JSON.parse(localStorage.getItem('bNames')||'["Business 1","Business 2","Business 3","Business 4"]'),
   bTypes:JSON.parse(localStorage.getItem('bTypes')||'["E-commerce","E-commerce","Freelance","Services"]'),
   modules:JSON.parse(localStorage.getItem('modules')||'{"b1":[],"b2":[],"b3":[],"b4":[]}')
@@ -430,13 +411,6 @@ function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
 // SAVE FUNCTIONS
-function openFinanceForBusiness(bName){
-  var idx = state.bNames.indexOf(bName);
-  var sel = document.getElementById('f-business');
-  if(sel && idx >= 0) sel.selectedIndex = idx;
-  openModal('modal-finance');
-}
-
 function saveFinance(){
   var desc=document.getElementById('f-desc').value.trim();
   if(!desc)return;
@@ -568,8 +542,6 @@ function renderModule(bid,m){
       return '<div class="module-wrapper"><button class="module-remove" onclick="removeModule(\''+bid+'\','+m.id+')">✕</button><div class="card"><div class="card-title">💰 Finances</div><div style="display:flex;gap:1rem"><div class="metric-card" style="flex:1;padding:.75rem"><div class="metric-label">Revenus</div><div class="metric-value" style="font-size:20px">'+mr.toLocaleString('fr-FR')+' €</div></div><div class="metric-card" style="flex:1;padding:.75rem"><div class="metric-label">Dépenses</div><div class="metric-value" style="font-size:20px">'+md.toLocaleString('fr-FR')+' €</div></div></div></div></div>';
     case 'note-rapide':
       return '<div class="module-wrapper"><button class="module-remove" onclick="removeModule(\''+bid+'\','+m.id+')">✕</button><div class="card"><div class="card-title">📝 Note rapide</div><textarea class="form-textarea" style="width:100%;min-height:100px" placeholder="Écris ici..." onchange="saveQuickNote(\''+bid+'\','+m.id+',this.value)" id="qn-'+m.id+'">'+(m.quickNote||'')+'</textarea></div></div>';
-    case 'calendrier-ca':
-      return '<div class="module-wrapper"><button class="module-remove" onclick="removeModule(\''+bid+'\','+m.id+')">✕</button>'+renderCalendar(bName,m.id)+'</div>';
     default: return '';
   }
 }
@@ -663,168 +635,6 @@ function saveTrade(){
   ['tr-paire','tr-entree','tr-sortie','tr-notes'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('tr-pnl').value='';
 }
 
-// CHART ENTRY MODAL
-var chartEntryHtml = '<div id="modal-chart-entry" class="modal-overlay"><div class="modal"><div class="modal-title">📈 Ajouter une entrée CA <button class="modal-close" onclick="closeModal('modal-chart-entry')">✕</button></div><div class="form-row"><div class="form-group"><label class="form-label">Date</label><input class="form-input" id="ce-date" type="date"></div><div class="form-group"><label class="form-label">Montant (€)</label><input class="form-input" id="ce-montant" type="number" placeholder="ex: 500"></div></div><div class="form-group"><label class="form-label">Description</label><input class="form-input" id="ce-desc" placeholder="ex: Ventes du jour"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-chart-entry')">Annuler</button><button class="btn btn-primary" onclick="saveChartEntry()">Enregistrer</button></div></div></div>';
-document.body.insertAdjacentHTML('beforeend', chartEntryHtml);
-
-var currentChartBid = null;
-var currentChartMid = null;
-
-function openChartEntry(bid, mid) {
-  currentChartBid = bid;
-  currentChartMid = mid;
-  document.getElementById('ce-date').value = new Date().toISOString().split('T')[0];
-  document.getElementById('ce-montant').value = '';
-  document.getElementById('ce-desc').value = '';
-  openModal('modal-chart-entry');
-}
-
-function saveChartEntry() {
-  var montant = parseFloat(document.getElementById('ce-montant').value);
-  if(!montant) return;
-  if(!state.chartData) state.chartData = {};
-  var key = currentChartBid + '-' + currentChartMid;
-  if(!state.chartData[key]) state.chartData[key] = [];
-  state.chartData[key].push({
-    date: document.getElementById('ce-date').value || new Date().toISOString().split('T')[0],
-    montant: montant,
-    desc: document.getElementById('ce-desc').value
-  });
-  state.chartData[key].sort(function(a,b){return a.date.localeCompare(b.date);});
-  localStorage.setItem('chartData', JSON.stringify(state.chartData));
-  closeModal('modal-chart-entry');
-  if(currentBusiness) renderBusinessPage(currentBusiness);
-  setTimeout(function(){updateChart(currentChartMid, currentChartBid);}, 150);
-}
-
-function updateChart(mid, bid) {
-  if(!state.chartData) state.chartData = JSON.parse(localStorage.getItem('chartData') || '{}');
-  var key = bid + '-' + mid;
-  var data = state.chartData[key] || [];
-  var period = document.getElementById('period-' + mid);
-  var periodVal = period ? period.value : 'day';
-  var canvas = document.getElementById('chart-' + mid);
-  if(!canvas || !window.Chart) return;
-
-  var grouped = {};
-  data.forEach(function(d) {
-    var label;
-    if(periodVal === 'day') label = d.date;
-    else if(periodVal === 'week') {
-      var dt = new Date(d.date);
-      var jan1 = new Date(dt.getFullYear(), 0, 1);
-      var week = Math.ceil(((dt - jan1) / 86400000 + jan1.getDay() + 1) / 7);
-      label = dt.getFullYear() + '-S' + week;
-    } else {
-      label = d.date.substring(0, 7);
-    }
-    grouped[label] = (grouped[label] || 0) + d.montant;
-  });
-
-  var labels = Object.keys(grouped);
-  var values = labels.map(function(l){return grouped[l];});
-  var colors = values.map(function(v){return v >= 0 ? 'rgba(34,196,138,.2)' : 'rgba(226,75,74,.2)';});
-  var borderColors = values.map(function(v){return v >= 0 ? '#22C48A' : '#E24B4A';});
-
-  if(canvas._chart) canvas._chart.destroy();
-  canvas._chart = new window.Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'CA (€)',
-        data: values,
-        backgroundColor: colors,
-        borderColor: borderColors,
-        borderWidth: 2,
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {legend: {display: false}},
-      scales: {
-        y: {grid: {color: '#F1EFE8'}, ticks: {callback: function(v){return v + ' €';}}},
-        x: {grid: {display: false}}
-      }
-    }
-  });
-}
-
-// CALENDAR
-var calState = {year: new Date().getFullYear(), month: new Date().getMonth()};
-
-function renderCalendar(bName, mid) {
-  var year = calState.year;
-  var month = calState.month;
-  var monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  var dayNames = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
-  
-  var calData = JSON.parse(localStorage.getItem('calData') || '{}');
-  var key = bName;
-  var entries = calData[key] || {};
-  
-  var firstDay = new Date(year, month, 1);
-  var lastDay = new Date(year, month + 1, 0);
-  var startDow = (firstDay.getDay() + 6) % 7;
-  
-  var today = new Date();
-  var todayStr = today.toISOString().split('T')[0];
-  
-  var html = '<div class="card"><div class="card-title">📅 Calendrier CA — ' + monthNames[month] + ' ' + year;
-  html += '<div class="cal-nav"><button class="cal-nav-btn" onclick="calPrev('' + bName + '',' + mid + ')">‹</button>';
-  html += '<span class="cal-month-title">' + monthNames[month] + ' ' + year + '</span>';
-  html += '<button class="cal-nav-btn" onclick="calNext('' + bName + '',' + mid + ')">›</button></div></div>';
-  html += '<div class="calendar-grid">';
-  
-  dayNames.forEach(function(d){html += '<div class="cal-header">' + d + '</div>';});
-  
-  for(var i = 0; i < startDow; i++) html += '<div class="cal-day other-month"></div>';
-  
-  var monthTotal = 0;
-  for(var d = 1; d <= lastDay.getDate(); d++) {
-    var dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-    var amount = entries[dateStr] || null;
-    if(amount) monthTotal += amount;
-    var isToday = dateStr === todayStr;
-    html += '<div class="cal-day' + (isToday?' today':'') + '" onclick="calDayClick('' + bName + '','' + dateStr + '',' + mid + ')">';
-    html += '<div class="cal-day-num">' + d + '</div>';
-    if(amount !== null) html += '<div class="cal-day-amount ' + (amount>=0?'positive':'negative') + '">' + (amount>=0?'+':'') + amount.toLocaleString('fr-FR') + '€</div>';
-    html += '</div>';
-  }
-  
-  html += '</div>';
-  html += '<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text-muted)">Total ' + monthNames[month] + '</span><strong style="color:' + (monthTotal>=0?'var(--green)':'var(--red)') + '">' + (monthTotal>=0?'+':'') + monthTotal.toLocaleString('fr-FR') + ' €</strong></div>';
-  html += '</div>';
-  return html;
-}
-
-function calPrev(bName, mid) {
-  calState.month--;
-  if(calState.month < 0) {calState.month = 11; calState.year--;}
-  if(currentBusiness) renderBusinessPage(currentBusiness);
-}
-function calNext(bName, mid) {
-  calState.month++;
-  if(calState.month > 11) {calState.month = 0; calState.year++;}
-  if(currentBusiness) renderBusinessPage(currentBusiness);
-}
-
-var calClickBiz = null, calClickDate = null, calClickMid = null;
-function calDayClick(bName, dateStr, mid) {
-  calClickBiz = bName; calClickDate = dateStr; calClickMid = mid;
-  var calData = JSON.parse(localStorage.getItem('calData') || '{}');
-  var existing = (calData[bName] || {})[dateStr] || '';
-  var val = prompt('CA du ' + dateStr + ' (€) :', existing);
-  if(val === null) return;
-  if(!calData[bName]) calData[bName] = {};
-  if(val === '' || val === '0') { delete calData[bName][dateStr]; }
-  else { calData[bName][dateStr] = parseFloat(val) || 0; }
-  localStorage.setItem('calData', JSON.stringify(calData));
-  if(currentBusiness) renderBusinessPage(currentBusiness);
-}
-
 // CHART.JS
 var script=document.createElement('script');
 script.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
@@ -836,4 +646,5 @@ document.querySelectorAll('.modal-overlay').forEach(function(m){m.addEventListen
 function init(){applyNames();updateAll();renderNotes();}
 </script>
 </body>
+</html>
 </html>
