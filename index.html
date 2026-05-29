@@ -127,10 +127,24 @@ tr:last-child td{border-bottom:none}
   .topbar{padding:8px 12px;height:auto;flex-wrap:wrap;gap:6px}
   .content{padding:12px}
   .metrics-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .metrics-grid[style*="repeat(5"]{grid-template-columns:1fr 1fr!important}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
   .module-picker-grid{grid-template-columns:1fr 1fr}
 }
+
+.cal-modal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
+.cal-modal-header{font-size:10px;font-weight:600;color:var(--text-muted);text-align:center;padding:4px 0;text-transform:uppercase}
+.cal-modal-day{border-radius:8px;padding:6px 4px;min-height:56px;border:1px solid var(--border);cursor:pointer;transition:border-color .15s;position:relative}
+.cal-modal-day:hover{border-color:var(--accent)}
+.cal-modal-day.today{border-color:var(--accent);background:#F0EFFE}
+.cal-modal-day.empty{border:none;cursor:default}
+.cal-day-num{font-size:11px;font-weight:600;color:var(--text-muted)}
+.cal-day-val{font-size:12px;font-weight:600;margin-top:2px}
+.cal-day-val.pos{color:var(--green)}
+.cal-day-val.neg{color:var(--red)}
+.cal-month-total{display:flex;justify-content:space-between;padding:10px 0 0;border-top:1px solid var(--border);margin-top:8px;font-size:14px}
+
 </style>
 </head>
 <body>
@@ -178,8 +192,9 @@ tr:last-child td{border-bottom:none}
     <div class="content">
 
       <div id="page-dashboard" class="page active">
-        <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">Revenus ce mois</div><div class="metric-value" id="m-revenus">0 EUR</div><div class="metric-sub">Total toutes activites</div></div>
+        <div class="metrics-grid" style="grid-template-columns:repeat(5,1fr)">
+          <div class="metric-card" onclick="openDashCal('dashboard-revenues','Revenus - Historique mensuel')" style="cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"><div class="metric-label">Revenus ce mois &#128197;</div><div class="metric-value" id="m-revenus">0 EUR</div><div class="metric-sub">Clique pour voir l historique</div></div>
+          <div class="metric-card" style="border:2px solid var(--accent);background:linear-gradient(135deg,#F0EFFE,#fff)"><div class="metric-label" style="color:var(--accent)">&#128181; Capital total</div><div class="metric-value" id="m-capital" style="color:var(--accent)">0 EUR</div><div class="metric-sub">Cumul depuis le debut</div></div>
           <div class="metric-card"><div class="metric-label">Clients actifs</div><div class="metric-value" id="m-clients">0</div><div class="metric-sub">Tous business</div></div>
           <div class="metric-card"><div class="metric-label">Taches en cours</div><div class="metric-value" id="m-taches">0</div><div class="metric-sub">A completer</div></div>
           <div class="metric-card"><div class="metric-label">Notes</div><div class="metric-value" id="m-notes">0</div><div class="metric-sub">Documents crees</div></div>
@@ -321,6 +336,7 @@ tr:last-child td{border-bottom:none}
     <div class="form-row"><div class="form-group"><label class="form-label">Business 2 - Nom</label><input class="form-input" id="s-b2"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t2"></div></div>
     <div class="form-row"><div class="form-group"><label class="form-label">Business 3 - Nom</label><input class="form-input" id="s-b3"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t3"></div></div>
     <div class="form-row"><div class="form-group"><label class="form-label">Business 4 - Nom</label><input class="form-input" id="s-b4"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t4"></div></div>
+    <div id="s-extra-businesses"></div>
     <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-settings')">Annuler</button><button class="btn btn-primary" onclick="saveSettings()">Enregistrer</button></div>
   </div>
 </div>
@@ -557,12 +573,26 @@ function deleteTrade(i) { state.trading.splice(i,1); save(); if(currentBusiness)
 function openSettings() {
   state.bNames.forEach(function(n,i) { document.getElementById('s-b'+(i+1)).value = n; });
   state.bTypes.forEach(function(t,i) { document.getElementById('s-t'+(i+1)).value = t; });
+  var extraHtml = '';
+  if (state.extraBiz.length > 0) {
+    extraHtml += '<p style="font-size:12px;color:var(--text-muted);text-transform:uppercase;font-weight:600;margin:1rem 0 .5rem">Business supplementaires</p>';
+    state.extraBiz.forEach(function(b, i) {
+      extraHtml += '<div class="form-row" style="margin-bottom:8px"><div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="s-eb-name-'+i+'" value="'+b.name+'"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-eb-type-'+i+'" value="'+b.type+'"></div></div>';
+    });
+  }
+  document.getElementById('s-extra-businesses').innerHTML = extraHtml;
   openModal('modal-settings');
 }
 
 function saveSettings() {
   state.bNames = [1,2,3,4].map(function(i) { return document.getElementById('s-b'+i).value || 'Business '+i; });
   state.bTypes = [1,2,3,4].map(function(i) { return document.getElementById('s-t'+i).value || 'Activite'; });
+  state.extraBiz.forEach(function(b, i) {
+    var nameEl = document.getElementById('s-eb-name-'+i);
+    var typeEl = document.getElementById('s-eb-type-'+i);
+    if (nameEl) b.name = nameEl.value || b.name;
+    if (typeEl) b.type = typeEl.value || b.type;
+  });
   save(); renderSidebar(); refreshSelects(); updateAll(); closeModal('modal-settings');
 }
 
@@ -1013,6 +1043,7 @@ function updateAll() {
       return '<tr><td>'+f.desc+'</td><td>'+f.business+'</td><td><span class="badge '+(f.type==='Revenu'?'bg':'br')+'">'+f.type+'</span></td><td><strong>'+f.montant.toLocaleString('fr-FR')+' EUR</strong></td><td>'+f.date+'</td><td><button class="btn btn-danger btn-sm" onclick="deleteFinance('+i+')">x</button></td></tr>';
     }).join('');
 
+  updateDashboardMetric();
   document.getElementById('taches-full-list').innerHTML = state.taches.length === 0 ? '<div class="empty-state">Aucune tache encore</div>' :
     state.taches.map(function(t,i) {
       return '<div class="task-item"><div class="task-check '+(t.done?'done':'')+'" onclick="toggleTask('+i+')"></div><div class="task-content"><div class="task-name '+(t.done?'done':'')+'">'+t.nom+'</div>'+(t.desc?'<div class="task-desc">'+t.desc+'</div>':'')+'<div class="task-meta"><span class="badge '+pBadge[t.priorite]+'">'+t.priorite+'</span><span class="badge bgr">'+t.business+'</span></div></div><button class="btn btn-danger btn-sm" onclick="deleteTask('+i+')">x</button></div>';
@@ -1030,6 +1061,129 @@ function updateAll() {
   }
 }
 
+
+var dashCalState = { year: new Date().getFullYear(), month: new Date().getMonth() };
+var dashCalKey = 'dashboard-revenues';
+
+function openDashCal(key, title) {
+  dashCalKey = key || 'dashboard-revenues';
+  document.getElementById('cal-modal-title').textContent = title || 'Historique revenus';
+  renderDashCal();
+  openModal('modal-dashboard-cal');
+}
+
+function dashCalPrev() {
+  dashCalState.month--;
+  if (dashCalState.month < 0) { dashCalState.month = 11; dashCalState.year--; }
+  renderDashCal();
+}
+
+function dashCalNext() {
+  dashCalState.month++;
+  if (dashCalState.month > 11) { dashCalState.month = 0; dashCalState.year++; }
+  renderDashCal();
+}
+
+function renderDashCal() {
+  var year = dashCalState.year;
+  var month = dashCalState.month;
+  var mNames = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  var dNames = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  document.getElementById('dash-cal-month-label').textContent = mNames[month] + ' ' + year;
+
+  var calData = JSON.parse(localStorage.getItem('dashCalData') || '{}');
+  var entries = (calData[dashCalKey] || {})[year + '-' + month] || {};
+
+  var firstDay = new Date(year, month, 1);
+  var lastDay = new Date(year, month + 1, 0);
+  var startDow = (firstDay.getDay() + 6) % 7;
+  var todayStr = new Date().toISOString().split('T')[0];
+
+  var html = '';
+  dNames.forEach(function(d) {
+    html += '<div class="cal-modal-header">' + d + '</div>';
+  });
+  for (var i = 0; i < startDow; i++) html += '<div class="cal-modal-day empty"></div>';
+
+  var total = 0;
+  for (var d = 1; d <= lastDay.getDate(); d++) {
+    var ds = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    var amt = entries[d] !== undefined ? entries[d] : null;
+    if (amt !== null) total += amt;
+    var isToday = ds === todayStr;
+    html += '<div class="cal-modal-day' + (isToday ? ' today' : '') + '" onclick="dashCalDayClick(' + d + ')">';
+    html += '<div class="cal-day-num">' + d + '</div>';
+    if (amt !== null) {
+      html += '<div class="cal-day-val ' + (amt >= 0 ? 'pos' : 'neg') + '">' + (amt >= 0 ? '+' : '') + amt.toLocaleString('fr-FR') + '</div>';
+    }
+    html += '</div>';
+  }
+
+  document.getElementById('dash-cal-grid').innerHTML = html;
+  var totalEl = document.getElementById('dash-cal-total');
+  totalEl.textContent = (total >= 0 ? '+' : '') + total.toLocaleString('fr-FR') + ' EUR';
+  totalEl.style.color = total >= 0 ? 'var(--green)' : 'var(--red)';
+
+  updateDashboardMetric();
+}
+
+function dashCalDayClick(day) {
+  var calData = JSON.parse(localStorage.getItem('dashCalData') || '{}');
+  var year = dashCalState.year;
+  var month = dashCalState.month;
+  var key2 = year + '-' + month;
+  if (!calData[dashCalKey]) calData[dashCalKey] = {};
+  if (!calData[dashCalKey][key2]) calData[dashCalKey][key2] = {};
+  var existing = calData[dashCalKey][key2][day] !== undefined ? calData[dashCalKey][key2][day] : '';
+  var val = prompt('Montant du ' + day + '/' + (month+1) + '/' + year + ' (EUR) :', existing);
+  if (val === null) return;
+  if (val === '') {
+    delete calData[dashCalKey][key2][day];
+  } else {
+    calData[dashCalKey][key2][day] = parseFloat(val) || 0;
+  }
+  localStorage.setItem('dashCalData', JSON.stringify(calData));
+  renderDashCal();
+}
+
+function updateDashboardMetric() {
+  var now = new Date();
+  var calData = JSON.parse(localStorage.getItem('dashCalData') || '{}');
+  var key2 = now.getFullYear() + '-' + now.getMonth();
+  var entries = (calData['dashboard-revenues'] || {})[key2] || {};
+  var monthTotal = 0;
+  Object.keys(entries).forEach(function(d) { monthTotal += entries[d]; });
+  var el = document.getElementById('m-revenus');
+  if (el && Object.keys(entries).length > 0) {
+    el.textContent = monthTotal.toLocaleString('fr-FR') + ' EUR';
+    el.style.color = monthTotal >= 0 ? 'var(--green)' : 'var(--red)';
+  }
+
+  // Capital total = somme de TOUS les mois de TOUTES les annees
+  var allMonths = calData['dashboard-revenues'] || {};
+  var capitalTotal = 0;
+  Object.keys(allMonths).forEach(function(monthKey) {
+    var monthEntries = allMonths[monthKey];
+    Object.keys(monthEntries).forEach(function(day) {
+      capitalTotal += monthEntries[day];
+    });
+  });
+  
+  // Ajouter aussi les transactions enregistrees dans state.finances
+  var financeTotal = state.finances.filter(function(f) { return f.type === 'Revenu'; }).reduce(function(s,f) { return s+f.montant; }, 0);
+  var financeDepenses = state.finances.filter(function(f) { return f.type === 'Depense'; }).reduce(function(s,f) { return s+f.montant; }, 0);
+  
+  // Capital = calendrier + transactions nettes
+  var capital = capitalTotal + financeTotal - financeDepenses;
+  
+  var capEl = document.getElementById('m-capital');
+  if (capEl) {
+    capEl.textContent = capital.toLocaleString('fr-FR') + ' EUR';
+    capEl.style.color = capital >= 0 ? 'var(--accent)' : 'var(--red)';
+  }
+}
+
+
 document.querySelectorAll('.modal-overlay').forEach(function(m) {
   m.addEventListener('click', function(e) { if (e.target === m) m.classList.remove('open'); });
 });
@@ -1043,7 +1197,26 @@ function init() {
   refreshSelects();
   updateAll();
   renderNotes();
+  updateDashboardMetric();
 }
 </script>
+
+<div id="modal-dashboard-cal" class="modal-overlay">
+  <div class="modal modal-lg">
+    <div class="modal-title" id="cal-modal-title">Historique revenus <button class="modal-close" onclick="closeModal('modal-dashboard-cal')">x</button></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <button class="btn btn-ghost btn-sm" onclick="dashCalPrev()">Precedent</button>
+      <strong id="dash-cal-month-label" style="font-size:15px"></strong>
+      <button class="btn btn-ghost btn-sm" onclick="dashCalNext()">Suivant</button>
+    </div>
+    <div class="cal-modal-grid" id="dash-cal-grid"></div>
+    <div class="cal-month-total">
+      <span style="color:var(--text-muted)">Total du mois</span>
+      <strong id="dash-cal-total" style="font-size:16px"></strong>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px">Clique sur un jour pour entrer ton revenu ou depense</p>
+  </div>
+</div>
+
 </body>
 </html>
