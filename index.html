@@ -347,6 +347,373 @@ document.getElementById('pwd-input').addEventListener('keydown',function(e){if(e
 function checkPwd(){
   if(document.getElementById('pwd-input').value==='907590'){
     document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').classList.add('visible');<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Espace Business</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F6F2;--surface:#FFFFFF;--sidebar:#16162A;--sidebar-text:#8080A0;--sidebar-hover:#22223A;
+  --text:#16162A;--text-muted:#888899;--border:#E8E6E0;
+  --accent:#7B6EF6;--accent2:#22C48A;--accent3:#F06A3A;--accent4:#3A9EF5;
+  --red:#E24B4A;--green:#3D9A5C;--amber:#C97B1A;
+  --radius:14px;--radius-sm:9px;--radius-xs:6px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--sidebar);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:#fff;border-radius:20px;padding:2.5rem 2rem;width:340px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.3)}
+.login-logo{font-size:44px;margin-bottom:1rem}
+.login-title{font-size:21px;font-weight:600;margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--text-muted);margin-bottom:1.5rem}
+.login-input{width:100%;padding:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:18px;text-align:center;letter-spacing:0.25em;margin-bottom:1rem;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s}
+.login-btn:hover{opacity:0.88}
+.login-error{color:var(--red);font-size:13px;margin-top:10px;display:none}
+
+/* APP LAYOUT */
+#app{display:none;min-height:100vh}
+#app.visible{display:flex}
+
+/* SIDEBAR */
+.sidebar{width:230px;min-height:100vh;background:var(--sidebar);padding:1.25rem 0;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-logo{padding:0 1.25rem 1.25rem;border-bottom:1px solid #22223A;margin-bottom:.75rem;display:flex;align-items:center;gap:10px}
+.sidebar-logo-icon{width:32px;height:32px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sidebar-logo-text{font-size:15px;font-weight:600;color:#fff}
+.sidebar-section{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#44445A;padding:.75rem 1.25rem .3rem}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:8px 1.25rem;color:var(--sidebar-text);cursor:pointer;font-size:13px;transition:background .15s,color .15s;border-radius:0}
+.sidebar-item:hover,.sidebar-item.active{background:var(--sidebar-hover);color:#fff}
+.bdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.75rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar-left{}
+.topbar-title{font-size:15px;font-weight:600}
+.topbar-sub{font-size:12px;color:var(--text-muted);margin-top:1px}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.btn{padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s,transform .1s;display:inline-flex;align-items:center;gap:5px}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{opacity:.88}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--text-muted)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-danger{background:#FCEBEB;color:var(--red);border:none}
+
+/* CONTENT */
+.content{flex:1;padding:1.75rem;overflow-y:auto}
+.page{display:none}
+.page.active{display:block}
+
+/* CARDS & GRID */
+.card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:1.25rem}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.metric-card{background:var(--surface);border-radius:var(--radius);padding:1.1rem 1.25rem;border:1px solid var(--border)}
+.metric-label{font-size:11px;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.metric-value{font-size:26px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)}
+.metric-sub{font-size:11px;color:var(--text-muted);margin-top:4px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem}
+
+/* BUSINESS CARDS */
+.business-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:1.25rem;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s}
+.business-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 25px rgba(123,110,246,.1)}
+.bcard-icon{width:42px;height:42px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px}
+.bcard-name{font-size:14px;font-weight:600;margin-bottom:3px}
+.bcard-type{font-size:12px;color:var(--text-muted);margin-bottom:12px}
+.bcard-stat{display:flex;justify-content:space-between;font-size:12px;padding-top:10px;border-top:1px solid var(--border);color:var(--text-muted)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:500;white-space:nowrap}
+.bg{background:#EAF3DE;color:#3B6D11}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bb{background:#E6F1FB;color:#185FA5}.bp{background:#EEEDFE;color:#3C3489}.bgr{background:#F1EFE8;color:#5F5E5A}
+
+/* TABLES */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;padding:0 12px 10px 0;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+
+/* TASKS */
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.task-item:last-child{border-bottom:none}
+.task-check{width:17px;height:17px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;margin-top:1px;transition:border-color .15s,background .15s}
+.task-check:hover{border-color:var(--accent)}
+.task-check.done{background:var(--green);border-color:var(--green)}
+.task-content{flex:1;min-width:0}
+.task-name{font-size:13px;color:var(--text);font-weight:500}
+.task-name.done{text-decoration:line-through;color:var(--text-muted)}
+.task-desc{font-size:12px;color:var(--text-muted);margin-top:3px}
+.task-meta{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+
+/* BAR */
+.bar-wrap{display:flex;flex-direction:column;gap:12px}
+.bar-item{display:flex;flex-direction:column;gap:5px}
+.bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)}
+.bar-track{height:6px;background:var(--bg);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .6s ease}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius);padding:1.5rem;width:480px;max-width:100%;max-height:90vh;overflow-y:auto}
+.modal-lg{width:620px}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center}
+.modal-close{width:28px;height:28px;border-radius:var(--radius-xs);border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:15px;color:var(--text-muted);display:flex;align-items:center;justify-content:center}
+.form-group{margin-bottom:1rem}
+.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.form-input,.form-select,.form-textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);outline:none;transition:border-color .15s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-textarea{resize:vertical;min-height:80px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
+
+/* NOTES */
+.note-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:1.25rem;cursor:pointer;transition:border-color .15s,transform .15s}
+.note-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.note-title{font-size:14px;font-weight:600;margin-bottom:5px}
+.note-preview{font-size:12px;color:var(--text-muted);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.note-meta{font-size:11px;color:var(--text-muted);margin-top:8px}
+.note-editor{display:none;position:fixed;inset:0;background:var(--surface);z-index:200;flex-direction:column}
+.note-editor.open{display:flex}
+.note-editor-header{border-bottom:1px solid var(--border);padding:1rem 1.75rem;display:flex;align-items:center;gap:12px}
+.note-editor-title{font-size:18px;font-weight:600;border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;color:var(--text);flex:1}
+.note-editor-body{flex:1;padding:1.75rem;overflow-y:auto}
+.note-editor-content{width:100%;min-height:calc(100vh - 120px);border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;color:var(--text);resize:none}
+
+/* MODULES */
+.module-grid{display:grid;gap:1rem;margin-bottom:1rem}
+.module-2{grid-template-columns:1fr 1fr}
+.module-3{grid-template-columns:1fr 1fr 1fr}
+.module-1{grid-template-columns:1fr}
+.module-wrapper{position:relative}
+.module-wrapper:hover .module-remove{opacity:1}
+.module-remove{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;z-index:5}
+
+/* ADD MODULE */
+.add-module-btn{border:2px dashed var(--border);border-radius:var(--radius);padding:1.25rem;text-align:center;cursor:pointer;color:var(--text-muted);font-size:13px;transition:border-color .15s,color .15s;background:transparent;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1rem}
+.add-module-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* MODULE PICKER */
+.module-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.module-option{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:1rem;cursor:pointer;text-align:center;transition:border-color .15s,background .15s}
+.module-option:hover{border-color:var(--accent);background:#F0EFFE}
+.module-option-icon{font-size:24px;margin-bottom:6px}
+.module-option-name{font-size:12px;font-weight:500}
+
+/* CHART */
+.chart-container{position:relative;height:180px}
+canvas{width:100%!important}
+
+/* TRADING TABLE */
+.trading-table input{border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;padding:4px 0}
+.trading-table input:focus{border-bottom:1.5px solid var(--accent)}
+.trading-row-actions{opacity:0;transition:opacity .15s}
+.trading-table tr:hover .trading-row-actions{opacity:1}
+
+/* CALENDAR */
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:8px}
+.cal-header{font-size:10px;font-weight:600;color:var(--text-muted);text-align:center;padding:4px 0;text-transform:uppercase}
+.cal-day{border-radius:6px;padding:4px;min-height:52px;border:1px solid var(--border);cursor:pointer;transition:border-color .15s;position:relative}
+.cal-day:hover{border-color:var(--accent)}
+.cal-day.today{border-color:var(--accent);background:#F0EFFE}
+.cal-day.other-month{opacity:.4}
+.cal-day-num{font-size:11px;font-weight:600;color:var(--text-muted)}
+.cal-day-amount{font-size:12px;font-weight:600;margin-top:2px}
+.cal-day-amount.positive{color:var(--green)}
+.cal-day-amount.negative{color:var(--red)}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.cal-nav-btn{background:none;border:1.5px solid var(--border);border-radius:var(--radius-xs);padding:3px 8px;cursor:pointer;font-size:13px}
+.cal-nav-btn:hover{background:var(--bg)}
+.cal-month-title{font-size:13px;font-weight:600}
+
+/* EMPTY STATE */
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:2rem;color:var(--text-muted);font-size:13px}
+.empty-icon{font-size:32px;margin-bottom:8px}
+
+/* SECTION HEADER */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.section-title{font-size:16px;font-weight:600}
+
+/* MOBILE */
+@media(max-width:768px){
+  #app.visible{flex-direction:column}
+  .sidebar{width:100%;min-height:auto;height:auto;position:relative;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;padding:8px;gap:4px}
+  .sidebar-logo,.sidebar-section{display:none}
+  .sidebar-item{padding:6px 12px;font-size:11px;white-space:nowrap;border-radius:20px;flex-shrink:0}
+  .bdot{display:none}
+  .main{width:100%}
+  .topbar{padding:8px 12px;height:auto;flex-wrap:wrap;gap:6px}
+  .topbar-actions{flex-wrap:wrap;gap:4px}
+  .btn{padding:5px 8px;font-size:11px}
+  .content{padding:12px}
+  .metrics-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .grid-2,.grid-3,.grid-4,.module-2,.module-3{grid-template-columns:1fr}
+  .metric-value{font-size:18px}
+  table{font-size:11px}
+  th,td{padding:6px 4px}
+  .modal{padding:1rem}
+  .form-row{grid-template-columns:1fr}
+  .module-picker-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">🏢</div>
+    <div class="login-title">Mon Espace Business</div>
+    <div class="login-sub">Entre ton mot de passe pour accéder</div>
+    <input class="login-input" type="password" id="pwd-input" placeholder="••••••">
+    <button class="login-btn" id="login-btn">Accéder →</button>
+    <div class="login-error" id="pwd-error">Mot de passe incorrect ❌</div>
+  </div>
+</div>
+
+<div id="app">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="sidebar-logo-icon">🏢</div><div class="sidebar-logo-text">Mon Espace</div></div>
+    <div class="sidebar-section">Navigation</div>
+    <div class="sidebar-item active" onclick="showPage('dashboard',this)">📊 Tableau de bord</div>
+    <div class="sidebar-item" onclick="showPage('finances',this)">💰 Finances</div>
+    <div class="sidebar-item" onclick="showPage('clients',this)">👥 Clients</div>
+    <div class="sidebar-item" onclick="showPage('taches',this)">✅ Tâches</div>
+    <div class="sidebar-item" onclick="showPage('notes',this)">📝 Notes & Docs</div>
+    <div class="sidebar-section" style="margin-top:1rem">Mes Business</div>
+    <div class="sidebar-item" onclick="showPage('b1',this)"><div class="bdot" style="background:#7B6EF6"></div> <span class="bname-0">Business 1</span></div>
+    <div class="sidebar-item" onclick="showPage('b2',this)"><div class="bdot" style="background:#22C48A"></div> <span class="bname-1">Business 2</span></div>
+    <div class="sidebar-item" onclick="showPage('b3',this)"><div class="bdot" style="background:#F06A3A"></div> <span class="bname-2">Business 3</span></div>
+    <div class="sidebar-item" onclick="showPage('b4',this)"><div class="bdot" style="background:#3A9EF5"></div> <span class="bname-3">Business 4</span></div>
+  </nav>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title" id="topbar-title">Tableau de bord</div>
+        <div class="topbar-sub" id="topbar-sub">Vue d'ensemble de tous tes business</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-settings')">⚙️ Paramètres</button>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-task')">+ Tâche</button>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-client')">+ Client</button>
+        <button class="btn btn-primary btn-sm" onclick="openModal('modal-finance')">+ Transaction</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div id="page-dashboard" class="page active">
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">Revenus ce mois</div><div class="metric-value" id="m-revenus">0 €</div><div class="metric-sub">Total toutes activités</div></div>
+          <div class="metric-card"><div class="metric-label">Clients actifs</div><div class="metric-value" id="m-clients">0</div><div class="metric-sub">Tous business</div></div>
+          <div class="metric-card"><div class="metric-label">Tâches en cours</div><div class="metric-value" id="m-taches">0</div><div class="metric-sub">À compléter</div></div>
+          <div class="metric-card"><div class="metric-label">Notes</div><div class="metric-value" id="m-notes">0</div><div class="metric-sub">Documents créés</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">Revenus par business</div><div class="bar-wrap" id="bar-revenus"><div class="empty-state">Aucune transaction encore</div></div></div>
+          <div class="card"><div class="card-title">Tâches prioritaires <span id="taches-count" style="font-size:11px;color:var(--text-muted);font-weight:400">0 tâche</span></div><div id="taches-list"><div class="empty-state">Aucune tâche encore</div></div></div>
+        </div>
+        <div class="card" style="margin-bottom:1rem"><div class="card-title">Clients récents</div><table><thead><tr><th>Nom</th><th>Business</th><th>Statut</th><th>Valeur</th></tr></thead><tbody id="clients-table"><tr><td colspan="4"><div class="empty-state">Aucun client encore</div></td></tr></tbody></table></div>
+        <div class="grid-4">
+          <div class="business-card" onclick="showPage('b1',null)"><div class="bcard-icon" style="background:#EEEDFE">🛍️</div><div class="bcard-name bname-0">Business 1</div><div class="bcard-type btype-0">E-commerce</div><div class="bcard-stat"><span>Revenus</span><strong id="b1-rev">0 €</strong></div></div>
+          <div class="business-card" onclick="showPage('b2',null)"><div class="bcard-icon" style="background:#E1F5EE">🛒</div><div class="bcard-name bname-1">Business 2</div><div class="bcard-type btype-1">E-commerce</div><div class="bcard-stat"><span>Revenus</span><strong id="b2-rev">0 €</strong></div></div>
+          <div class="business-card" onclick="showPage('b3',null)"><div class="bcard-icon" style="background:#FAECE7">💼</div><div class="bcard-name bname-2">Business 3</div><div class="bcard-type btype-2">Freelance</div><div class="bcard-stat"><span>Revenus</span><strong id="b3-rev">0 €</strong></div></div>
+          <div class="business-card" onclick="showPage('b4',null)"><div class="bcard-icon" style="background:#E6F1FB">🔧</div><div class="bcard-name bname-3">Business 4</div><div class="bcard-type btype-3">Services</div><div class="bcard-stat"><span>Revenus</span><strong id="b4-rev">0 €</strong></div></div>
+        </div>
+      </div>
+
+      <!-- FINANCES -->
+      <div id="page-finances" class="page">
+        <div class="section-header"><div class="section-title">💰 Finances</div><button class="btn btn-primary btn-sm" onclick="openModal('modal-finance')">+ Ajouter</button></div>
+        <div class="card"><table><thead><tr><th>Description</th><th>Business</th><th>Type</th><th>Montant</th><th>Date</th><th></th></tr></thead><tbody id="finances-table"><tr><td colspan="6"><div class="empty-state">Aucune transaction encore</div></td></tr></tbody></table></div>
+      </div>
+
+      <!-- CLIENTS -->
+      <div id="page-clients" class="page">
+        <div class="section-header"><div class="section-title">👥 Clients</div><button class="btn btn-primary btn-sm" onclick="openModal('modal-client')">+ Ajouter</button></div>
+        <div class="card"><table><thead><tr><th>Nom</th><th>Business</th><th>Email</th><th>Téléphone</th><th>Statut</th><th>Valeur</th><th></th></tr></thead><tbody id="clients-table-full"><tr><td colspan="7"><div class="empty-state">Aucun client encore</div></td></tr></tbody></table></div>
+      </div>
+
+      <!-- TACHES -->
+      <div id="page-taches" class="page">
+        <div class="section-header"><div class="section-title">✅ Tâches</div><button class="btn btn-primary btn-sm" onclick="openModal('modal-task')">+ Ajouter</button></div>
+        <div class="card"><div id="taches-full-list"><div class="empty-state">Aucune tâche encore</div></div></div>
+      </div>
+
+      <!-- NOTES -->
+      <div id="page-notes" class="page">
+        <div class="section-header"><div class="section-title">📝 Notes & Documents</div><button class="btn btn-primary btn-sm" onclick="newNote()">+ Nouveau</button></div>
+        <div id="notes-grid" class="grid-3"></div>
+        <div id="notes-empty" class="empty-state" style="display:none"><div class="empty-icon">📝</div>Aucune note encore — clique sur "+ Nouveau" pour commencer !</div>
+      </div>
+
+      <!-- BUSINESS PAGES -->
+      <div id="page-b1" class="page"><div id="bpc-b1"></div></div>
+      <div id="page-b2" class="page"><div id="bpc-b2"></div></div>
+      <div id="page-b3" class="page"><div id="bpc-b3"></div></div>
+      <div id="page-b4" class="page"><div id="bpc-b4"></div></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- NOTE EDITOR -->
+<div id="note-editor" class="note-editor">
+  <div class="note-editor-header">
+    <button class="btn btn-ghost btn-sm" onclick="closeNoteEditor()">← Retour</button>
+    <input class="note-editor-title" id="note-title-input" placeholder="Titre de la note...">
+    <button class="btn btn-primary btn-sm" onclick="saveCurrentNote()">💾 Sauvegarder</button>
+    <button class="btn btn-danger btn-sm" onclick="deleteCurrentNote()">🗑️ Supprimer</button>
+  </div>
+  <div class="note-editor-body">
+    <textarea class="note-editor-content" id="note-content-input" placeholder="Commence à écrire..."></textarea>
+  </div>
+</div>
+
+<!-- MODULE PICKER -->
+<div id="modal-module" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">➕ Ajouter un module <button class="modal-close" onclick="closeModal('modal-module')">✕</button></div>
+    <div class="module-picker-grid">
+      <div class="module-option" onclick="addModule('revenus-chart')"><div class="module-option-icon">📈</div><div class="module-option-name">Graphique CA</div></div>
+      <div class="module-option" onclick="addModule('trading-journal')"><div class="module-option-icon">📋</div><div class="module-option-name">Journal Trading</div></div>
+      <div class="module-option" onclick="addModule('taches-rapides')"><div class="module-option-icon">✅</div><div class="module-option-name">Tâches rapides</div></div>
+      <div class="module-option" onclick="addModule('clients-list')"><div class="module-option-icon">👥</div><div class="module-option-name">Liste clients</div></div>
+      <div class="module-option" onclick="addModule('revenus-bar')"><div class="module-option-icon">📊</div><div class="module-option-name">Barres revenus</div></div>
+      <div class="module-option" onclick="addModule('note-rapide')"><div class="module-option-icon">📝</div><div class="module-option-name">Note rapide</div></div>
+      <div class="module-option" onclick="addModule('calendrier-ca')"><div class="module-option-icon">📅</div><div class="module-option-name">Calendrier CA</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="modal-finance" class="modal-overlay"><div class="modal"><div class="modal-title">💰 Nouvelle transaction <button class="modal-close" onclick="closeModal('modal-finance')">✕</button></div><div class="form-row"><div class="form-group"><label class="form-label">Description</label><input class="form-input" id="f-desc" placeholder="ex: Vente produit X"></div><div class="form-group"><label class="form-label">Montant (€)</label><input class="form-input" id="f-montant" type="number" placeholder="0"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Business</label><select class="form-select" id="f-business"><option>Business 1</option><option>Business 2</option><option>Business 3</option><option>Business 4</option></select></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="f-type"><option>Revenu</option><option>Dépense</option></select></div></div><div class="form-group"><label class="form-label">Date</label><input class="form-input" id="f-date" type="date"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-finance')">Annuler</button><button class="btn btn-primary" onclick="saveFinance()">Enregistrer</button></div></div></div>
+
+<div id="modal-client" class="modal-overlay"><div class="modal"><div class="modal-title">👥 Nouveau client <button class="modal-close" onclick="closeModal('modal-client')">✕</button></div><div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="c-nom" placeholder="Prénom Nom"></div><div class="form-group"><label class="form-label">Business</label><select class="form-select" id="c-business"><option>Business 1</option><option>Business 2</option><option>Business 3</option><option>Business 4</option></select></div></div><div class="form-row"><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="c-email" type="email"></div><div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" id="c-tel"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Statut</label><select class="form-select" id="c-statut"><option>Actif</option><option>En attente</option><option>Inactif</option></select></div><div class="form-group"><label class="form-label">Valeur (€)</label><input class="form-input" id="c-valeur" type="number" placeholder="0"></div></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-client')">Annuler</button><button class="btn btn-primary" onclick="saveClient()">Enregistrer</button></div></div></div>
+
+<div id="modal-task" class="modal-overlay"><div class="modal"><div class="modal-title">✅ Nouvelle tâche <button class="modal-close" onclick="closeModal('modal-task')">✕</button></div><div class="form-group"><label class="form-label">Titre</label><input class="form-input" id="t-nom" placeholder="ex: Relancer client X"></div><div class="form-group"><label class="form-label">Description (optionnel)</label><textarea class="form-textarea" id="t-desc" placeholder="Détails, sous-tâches, notes..."></textarea></div><div class="form-row"><div class="form-group"><label class="form-label">Business</label><select class="form-select" id="t-business"><option>Business 1</option><option>Business 2</option><option>Business 3</option><option>Business 4</option></select></div><div class="form-group"><label class="form-label">Priorité</label><select class="form-select" id="t-priorite"><option>Urgent</option><option>Haute</option><option>Normale</option><option>Basse</option></select></div></div><div class="form-group"><label class="form-label">Échéance</label><input class="form-input" id="t-date" type="date"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-task')">Annuler</button><button class="btn btn-primary" onclick="saveTask()">Enregistrer</button></div></div></div>
+
+<div id="modal-settings" class="modal-overlay"><div class="modal modal-lg"><div class="modal-title">⚙️ Paramètres <button class="modal-close" onclick="closeModal('modal-settings')">✕</button></div><p style="font-size:12px;color:var(--text-muted);text-transform:uppercase;font-weight:600;letter-spacing:.04em;margin-bottom:1rem">Noms des business</p><div class="form-row"><div class="form-group"><label class="form-label">Business 1 — Nom</label><input class="form-input" id="s-b1" placeholder="Business 1"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t1" placeholder="E-commerce"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Business 2 — Nom</label><input class="form-input" id="s-b2" placeholder="Business 2"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t2" placeholder="E-commerce"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Business 3 — Nom</label><input class="form-input" id="s-b3" placeholder="Business 3"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t3" placeholder="Freelance"></div></div><div class="form-row"><div class="form-group"><label class="form-label">Business 4 — Nom</label><input class="form-input" id="s-b4" placeholder="Business 4"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t4" placeholder="Services"></div></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-settings')">Annuler</button><button class="btn btn-primary" onclick="saveSettings()">Enregistrer</button></div></div></div>
+
+<script>
+// AUTH
+document.getElementById('login-btn').addEventListener('click',checkPwd);
+document.getElementById('pwd-input').addEventListener('keydown',function(e){if(e.key==='Enter')checkPwd();});
+function checkPwd(){
+  if(document.getElementById('pwd-input').value==='907590'){
+    document.getElementById('login-screen').style.display='none';
     document.getElementById('app').classList.add('visible');
     sessionStorage.setItem('auth','1');
     init();
@@ -368,6 +735,7 @@ var state={
   taches:JSON.parse(localStorage.getItem('taches')||'[]'),
   notes:JSON.parse(localStorage.getItem('notes')||'[]'),
   trading:JSON.parse(localStorage.getItem('trading')||'[]'),
+  chartData:JSON.parse(localStorage.getItem('chartData')||'{}'),
   bNames:JSON.parse(localStorage.getItem('bNames')||'["Business 1","Business 2","Business 3","Business 4"]'),
   bTypes:JSON.parse(localStorage.getItem('bTypes')||'["E-commerce","E-commerce","Freelance","Services"]'),
   modules:JSON.parse(localStorage.getItem('modules')||'{"b1":[],"b2":[],"b3":[],"b4":[]}')
@@ -411,6 +779,13 @@ function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
 // SAVE FUNCTIONS
+function openFinanceForBusiness(bName){
+  var idx = state.bNames.indexOf(bName);
+  var sel = document.getElementById('f-business');
+  if(sel && idx >= 0) sel.selectedIndex = idx;
+  openModal('modal-finance');
+}
+
 function saveFinance(){
   var desc=document.getElementById('f-desc').value.trim();
   if(!desc)return;
@@ -542,6 +917,8 @@ function renderModule(bid,m){
       return '<div class="module-wrapper"><button class="module-remove" onclick="removeModule(\''+bid+'\','+m.id+')">✕</button><div class="card"><div class="card-title">💰 Finances</div><div style="display:flex;gap:1rem"><div class="metric-card" style="flex:1;padding:.75rem"><div class="metric-label">Revenus</div><div class="metric-value" style="font-size:20px">'+mr.toLocaleString('fr-FR')+' €</div></div><div class="metric-card" style="flex:1;padding:.75rem"><div class="metric-label">Dépenses</div><div class="metric-value" style="font-size:20px">'+md.toLocaleString('fr-FR')+' €</div></div></div></div></div>';
     case 'note-rapide':
       return '<div class="module-wrapper"><button class="module-remove" onclick="removeModule(\''+bid+'\','+m.id+')">✕</button><div class="card"><div class="card-title">📝 Note rapide</div><textarea class="form-textarea" style="width:100%;min-height:100px" placeholder="Écris ici..." onchange="saveQuickNote(\''+bid+'\','+m.id+',this.value)" id="qn-'+m.id+'">'+(m.quickNote||'')+'</textarea></div></div>';
+    case 'calendrier-ca':
+      return '<div class="module-wrapper"><button class="module-remove" onclick="removeModule(''+bid+'','+m.id+')">✕</button>'+renderCalendar(bName,m.id)+'</div>';
     default: return '';
   }
 }
@@ -635,6 +1012,168 @@ function saveTrade(){
   ['tr-paire','tr-entree','tr-sortie','tr-notes'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('tr-pnl').value='';
 }
 
+// CHART ENTRY MODAL
+var chartEntryHtml = '<div id="modal-chart-entry" class="modal-overlay"><div class="modal"><div class="modal-title">📈 Ajouter une entrée CA <button class="modal-close" onclick="closeModal('modal-chart-entry')">✕</button></div><div class="form-row"><div class="form-group"><label class="form-label">Date</label><input class="form-input" id="ce-date" type="date"></div><div class="form-group"><label class="form-label">Montant (€)</label><input class="form-input" id="ce-montant" type="number" placeholder="ex: 500"></div></div><div class="form-group"><label class="form-label">Description</label><input class="form-input" id="ce-desc" placeholder="ex: Ventes du jour"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-chart-entry')">Annuler</button><button class="btn btn-primary" onclick="saveChartEntry()">Enregistrer</button></div></div></div>';
+document.body.insertAdjacentHTML('beforeend', chartEntryHtml);
+
+var currentChartBid = null;
+var currentChartMid = null;
+
+function openChartEntry(bid, mid) {
+  currentChartBid = bid;
+  currentChartMid = mid;
+  document.getElementById('ce-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('ce-montant').value = '';
+  document.getElementById('ce-desc').value = '';
+  openModal('modal-chart-entry');
+}
+
+function saveChartEntry() {
+  var montant = parseFloat(document.getElementById('ce-montant').value);
+  if(!montant) return;
+  if(!state.chartData) state.chartData = {};
+  var key = currentChartBid + '-' + currentChartMid;
+  if(!state.chartData[key]) state.chartData[key] = [];
+  state.chartData[key].push({
+    date: document.getElementById('ce-date').value || new Date().toISOString().split('T')[0],
+    montant: montant,
+    desc: document.getElementById('ce-desc').value
+  });
+  state.chartData[key].sort(function(a,b){return a.date.localeCompare(b.date);});
+  localStorage.setItem('chartData', JSON.stringify(state.chartData));
+  closeModal('modal-chart-entry');
+  if(currentBusiness) renderBusinessPage(currentBusiness);
+  setTimeout(function(){updateChart(currentChartMid, currentChartBid);}, 150);
+}
+
+function updateChart(mid, bid) {
+  if(!state.chartData) state.chartData = JSON.parse(localStorage.getItem('chartData') || '{}');
+  var key = bid + '-' + mid;
+  var data = state.chartData[key] || [];
+  var period = document.getElementById('period-' + mid);
+  var periodVal = period ? period.value : 'day';
+  var canvas = document.getElementById('chart-' + mid);
+  if(!canvas || !window.Chart) return;
+
+  var grouped = {};
+  data.forEach(function(d) {
+    var label;
+    if(periodVal === 'day') label = d.date;
+    else if(periodVal === 'week') {
+      var dt = new Date(d.date);
+      var jan1 = new Date(dt.getFullYear(), 0, 1);
+      var week = Math.ceil(((dt - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+      label = dt.getFullYear() + '-S' + week;
+    } else {
+      label = d.date.substring(0, 7);
+    }
+    grouped[label] = (grouped[label] || 0) + d.montant;
+  });
+
+  var labels = Object.keys(grouped);
+  var values = labels.map(function(l){return grouped[l];});
+  var colors = values.map(function(v){return v >= 0 ? 'rgba(34,196,138,.2)' : 'rgba(226,75,74,.2)';});
+  var borderColors = values.map(function(v){return v >= 0 ? '#22C48A' : '#E24B4A';});
+
+  if(canvas._chart) canvas._chart.destroy();
+  canvas._chart = new window.Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'CA (€)',
+        data: values,
+        backgroundColor: colors,
+        borderColor: borderColors,
+        borderWidth: 2,
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {legend: {display: false}},
+      scales: {
+        y: {grid: {color: '#F1EFE8'}, ticks: {callback: function(v){return v + ' €';}}},
+        x: {grid: {display: false}}
+      }
+    }
+  });
+}
+
+// CALENDAR
+var calState = {year: new Date().getFullYear(), month: new Date().getMonth()};
+
+function renderCalendar(bName, mid) {
+  var year = calState.year;
+  var month = calState.month;
+  var monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  var dayNames = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  
+  var calData = JSON.parse(localStorage.getItem('calData') || '{}');
+  var key = bName;
+  var entries = calData[key] || {};
+  
+  var firstDay = new Date(year, month, 1);
+  var lastDay = new Date(year, month + 1, 0);
+  var startDow = (firstDay.getDay() + 6) % 7;
+  
+  var today = new Date();
+  var todayStr = today.toISOString().split('T')[0];
+  
+  var html = '<div class="card"><div class="card-title">📅 Calendrier CA — ' + monthNames[month] + ' ' + year;
+  html += '<div class="cal-nav"><button class="cal-nav-btn" onclick="calPrev('' + bName + '',' + mid + ')">‹</button>';
+  html += '<span class="cal-month-title">' + monthNames[month] + ' ' + year + '</span>';
+  html += '<button class="cal-nav-btn" onclick="calNext('' + bName + '',' + mid + ')">›</button></div></div>';
+  html += '<div class="calendar-grid">';
+  
+  dayNames.forEach(function(d){html += '<div class="cal-header">' + d + '</div>';});
+  
+  for(var i = 0; i < startDow; i++) html += '<div class="cal-day other-month"></div>';
+  
+  var monthTotal = 0;
+  for(var d = 1; d <= lastDay.getDate(); d++) {
+    var dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    var amount = entries[dateStr] || null;
+    if(amount) monthTotal += amount;
+    var isToday = dateStr === todayStr;
+    html += '<div class="cal-day' + (isToday?' today':'') + '" onclick="calDayClick('' + bName + '','' + dateStr + '',' + mid + ')">';
+    html += '<div class="cal-day-num">' + d + '</div>';
+    if(amount !== null) html += '<div class="cal-day-amount ' + (amount>=0?'positive':'negative') + '">' + (amount>=0?'+':'') + amount.toLocaleString('fr-FR') + '€</div>';
+    html += '</div>';
+  }
+  
+  html += '</div>';
+  html += '<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text-muted)">Total ' + monthNames[month] + '</span><strong style="color:' + (monthTotal>=0?'var(--green)':'var(--red)') + '">' + (monthTotal>=0?'+':'') + monthTotal.toLocaleString('fr-FR') + ' €</strong></div>';
+  html += '</div>';
+  return html;
+}
+
+function calPrev(bName, mid) {
+  calState.month--;
+  if(calState.month < 0) {calState.month = 11; calState.year--;}
+  if(currentBusiness) renderBusinessPage(currentBusiness);
+}
+function calNext(bName, mid) {
+  calState.month++;
+  if(calState.month > 11) {calState.month = 0; calState.year++;}
+  if(currentBusiness) renderBusinessPage(currentBusiness);
+}
+
+var calClickBiz = null, calClickDate = null, calClickMid = null;
+function calDayClick(bName, dateStr, mid) {
+  calClickBiz = bName; calClickDate = dateStr; calClickMid = mid;
+  var calData = JSON.parse(localStorage.getItem('calData') || '{}');
+  var existing = (calData[bName] || {})[dateStr] || '';
+  var val = prompt('CA du ' + dateStr + ' (€) :', existing);
+  if(val === null) return;
+  if(!calData[bName]) calData[bName] = {};
+  if(val === '' || val === '0') { delete calData[bName][dateStr]; }
+  else { calData[bName][dateStr] = parseFloat(val) || 0; }
+  localStorage.setItem('calData', JSON.stringify(calData));
+  if(currentBusiness) renderBusinessPage(currentBusiness);
+}
+
 // CHART.JS
 var script=document.createElement('script');
 script.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
@@ -645,6 +1184,8 @@ document.querySelectorAll('.modal-overlay').forEach(function(m){m.addEventListen
 
 function init(){applyNames();updateAll();renderNotes();}
 </script>
+</body>
+</html>
 </body>
 </html>
 </html>
