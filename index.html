@@ -7,13 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#F7F6F2;--surface:#FFF;--sidebar:#16162A;--sidebar-text:#8080A0;--sidebar-hover:#22223A;
-  --text:#16162A;--text-muted:#888899;--border:#E8E6E0;
-  --accent:#7B6EF6;--accent2:#22C48A;--accent3:#F06A3A;--accent4:#3A9EF5;
-  --red:#E24B4A;--green:#3D9A5C;--amber:#C97B1A;
-  --radius:14px;--radius-sm:9px;
-}
+:root{--bg:#F7F6F2;--surface:#FFF;--sidebar:#16162A;--sidebar-text:#8080A0;--sidebar-hover:#22223A;--text:#16162A;--text-muted:#888899;--border:#E8E6E0;--accent:#7B6EF6;--red:#E24B4A;--green:#3D9A5C;--radius:14px;--radius-sm:9px}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
 #login-screen{position:fixed;inset:0;background:var(--sidebar);display:flex;align-items:center;justify-content:center;z-index:9999}
 .login-box{background:#fff;border-radius:20px;padding:2.5rem 2rem;width:340px;text-align:center}
@@ -33,6 +27,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .sidebar-section{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#44445A;padding:.75rem 1.25rem .3rem}
 .sidebar-item{display:flex;align-items:center;gap:10px;padding:8px 1.25rem;color:var(--sidebar-text);cursor:pointer;font-size:13px;transition:background .15s,color .15s}
 .sidebar-item:hover,.sidebar-item.active{background:var(--sidebar-hover);color:#fff}
+.sidebar-add-btn{margin:6px 12px;border:1px dashed #44445A;border-radius:8px;padding:6px 10px;color:#7B6EF6;cursor:pointer;font-size:12px;text-align:center;transition:border-color .15s}
+.sidebar-add-btn:hover{border-color:#7B6EF6}
 .bdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .main{flex:1;display:flex;flex-direction:column;min-width:0}
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.75rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
@@ -125,7 +121,7 @@ tr:last-child td{border-bottom:none}
 @media(max-width:768px){
   #app.visible{flex-direction:column}
   .sidebar{width:100%;min-height:auto;height:auto;position:relative;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;padding:8px;gap:4px}
-  .sidebar-logo,.sidebar-section{display:none}
+  .sidebar-logo,.sidebar-section,.sidebar-add-btn{display:none}
   .sidebar-item{padding:6px 12px;font-size:11px;white-space:nowrap;border-radius:20px;flex-shrink:0}
   .bdot{display:none}
   .topbar{padding:8px 12px;height:auto;flex-wrap:wrap;gap:6px}
@@ -141,107 +137,111 @@ tr:last-child td{border-bottom:none}
 
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-logo">🏢</div>
+    <div class="login-logo">&#127962;</div>
     <div class="login-title">Mon Espace Business</div>
-    <div class="login-sub">Entre ton mot de passe pour accéder</div>
-    <input class="login-input" type="password" id="pwd-input" placeholder="••••••">
-    <button class="login-btn" id="login-btn">Accéder →</button>
-    <div class="login-error" id="pwd-error">Mot de passe incorrect ❌</div>
+    <div class="login-sub">Entre ton mot de passe pour acceder</div>
+    <input class="login-input" type="password" id="pwd-input" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;">
+    <button class="login-btn" id="login-btn">Acceder</button>
+    <div class="login-error" id="pwd-error">Mot de passe incorrect</div>
   </div>
 </div>
 
 <div id="app">
   <nav class="sidebar">
-    <div class="sidebar-logo"><div class="sidebar-logo-icon">🏢</div><div class="sidebar-logo-text">Mon Espace</div></div>
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">&#127962;</div>
+      <div class="sidebar-logo-text">Mon Espace</div>
+    </div>
     <div class="sidebar-section">Navigation</div>
-    <div class="sidebar-item active" onclick="showPage('dashboard',this)">📊 Tableau de bord</div>
-    <div class="sidebar-item" onclick="showPage('finances',this)">💰 Finances</div>
-    <div class="sidebar-item" onclick="showPage('clients',this)">👥 Clients</div>
-    <div class="sidebar-item" onclick="showPage('taches',this)">✅ Tâches</div>
-    <div class="sidebar-item" onclick="showPage('notes',this)">📝 Notes</div>
+    <div class="sidebar-item active" onclick="showPage('dashboard',this)">&#128202; Tableau de bord</div>
+    <div class="sidebar-item" onclick="showPage('finances',this)">&#128176; Finances</div>
+    <div class="sidebar-item" onclick="showPage('clients',this)">&#128101; Clients</div>
+    <div class="sidebar-item" onclick="showPage('taches',this)">&#9989; Taches</div>
+    <div class="sidebar-item" onclick="showPage('notes',this)">&#128221; Notes</div>
     <div class="sidebar-section" style="margin-top:1rem">Mes Business</div>
-    <div class="sidebar-item" onclick="showPage('b1',this)"><div class="bdot" style="background:#7B6EF6"></div><span class="bname-0">Business 1</span></div>
-    <div class="sidebar-item" onclick="showPage('b2',this)"><div class="bdot" style="background:#22C48A"></div><span class="bname-1">Business 2</span></div>
-    <div class="sidebar-item" onclick="showPage('b3',this)"><div class="bdot" style="background:#F06A3A"></div><span class="bname-2">Business 3</span></div>
-    <div class="sidebar-item" onclick="showPage('b4',this)"><div class="bdot" style="background:#3A9EF5"></div><span class="bname-3">Business 4</span></div>
+    <div id="sidebar-businesses"></div>
+    <div class="sidebar-add-btn" onclick="openModal('modal-add-business')">+ Nouveau business</div>
   </nav>
   <div class="main">
     <div class="topbar">
-      <div><div class="topbar-title" id="topbar-title">Tableau de bord</div><div class="topbar-sub" id="topbar-sub">Vue d'ensemble</div></div>
+      <div>
+        <div class="topbar-title" id="topbar-title">Tableau de bord</div>
+        <div class="topbar-sub" id="topbar-sub">Vue d ensemble</div>
+      </div>
       <div class="topbar-actions">
-        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-settings')">⚙️</button>
-        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-task')">+ Tâche</button>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-settings')">&#9881;</button>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('modal-task')">+ Tache</button>
         <button class="btn btn-ghost btn-sm" onclick="openModal('modal-client')">+ Client</button>
         <button class="btn btn-primary btn-sm" onclick="openModal('modal-finance')">+ Transaction</button>
       </div>
     </div>
     <div class="content">
+
       <div id="page-dashboard" class="page active">
         <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">Revenus ce mois</div><div class="metric-value" id="m-revenus">0 €</div><div class="metric-sub">Total toutes activités</div></div>
+          <div class="metric-card"><div class="metric-label">Revenus ce mois</div><div class="metric-value" id="m-revenus">0 EUR</div><div class="metric-sub">Total toutes activites</div></div>
           <div class="metric-card"><div class="metric-label">Clients actifs</div><div class="metric-value" id="m-clients">0</div><div class="metric-sub">Tous business</div></div>
-          <div class="metric-card"><div class="metric-label">Tâches en cours</div><div class="metric-value" id="m-taches">0</div><div class="metric-sub">À compléter</div></div>
-          <div class="metric-card"><div class="metric-label">Notes</div><div class="metric-value" id="m-notes">0</div><div class="metric-sub">Documents créés</div></div>
+          <div class="metric-card"><div class="metric-label">Taches en cours</div><div class="metric-value" id="m-taches">0</div><div class="metric-sub">A completer</div></div>
+          <div class="metric-card"><div class="metric-label">Notes</div><div class="metric-value" id="m-notes">0</div><div class="metric-sub">Documents crees</div></div>
         </div>
         <div class="grid-2">
           <div class="card"><div class="card-title">Revenus par business</div><div class="bar-wrap" id="bar-revenus"><div class="empty-state">Aucune transaction encore</div></div></div>
-          <div class="card"><div class="card-title">Tâches prioritaires <span id="taches-count" style="font-size:11px;color:var(--text-muted);font-weight:400">0</span></div><div id="taches-list"><div class="empty-state">Aucune tâche encore</div></div></div>
+          <div class="card"><div class="card-title">Taches prioritaires <span id="taches-count" style="font-size:11px;color:var(--text-muted);font-weight:400">0</span></div><div id="taches-list"><div class="empty-state">Aucune tache encore</div></div></div>
         </div>
-        <div class="card" style="margin-bottom:1rem"><div class="card-title">Clients récents</div><table><thead><tr><th>Nom</th><th>Business</th><th>Statut</th><th>Valeur</th></tr></thead><tbody id="clients-table"><tr><td colspan="4"><div class="empty-state">Aucun client encore</div></td></tr></tbody></table></div>
-        <div class="grid-4">
-          <div class="business-card" onclick="showPage('b1',null)"><div class="bcard-icon" style="background:#EEEDFE">🛍️</div><div class="bcard-name bname-0">Business 1</div><div class="bcard-type btype-0">E-commerce</div><div class="bcard-stat"><span>Revenus</span><strong id="b1-rev">0 €</strong></div></div>
-          <div class="business-card" onclick="showPage('b2',null)"><div class="bcard-icon" style="background:#E1F5EE">🛒</div><div class="bcard-name bname-1">Business 2</div><div class="bcard-type btype-1">E-commerce</div><div class="bcard-stat"><span>Revenus</span><strong id="b2-rev">0 €</strong></div></div>
-          <div class="business-card" onclick="showPage('b3',null)"><div class="bcard-icon" style="background:#FAECE7">💼</div><div class="bcard-name bname-2">Business 3</div><div class="bcard-type btype-2">Freelance</div><div class="bcard-stat"><span>Revenus</span><strong id="b3-rev">0 €</strong></div></div>
-          <div class="business-card" onclick="showPage('b4',null)"><div class="bcard-icon" style="background:#E6F1FB">🔧</div><div class="bcard-name bname-3">Business 4</div><div class="bcard-type btype-3">Services</div><div class="bcard-stat"><span>Revenus</span><strong id="b4-rev">0 €</strong></div></div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">Clients recents</div>
+          <table><thead><tr><th>Nom</th><th>Business</th><th>Statut</th><th>Valeur</th></tr></thead><tbody id="clients-table"><tr><td colspan="4"><div class="empty-state">Aucun client encore</div></td></tr></tbody></table>
         </div>
+        <div id="dashboard-cards" class="grid-4"></div>
       </div>
+
       <div id="page-finances" class="page">
-        <div class="section-header"><div class="section-title">💰 Finances</div><button class="btn btn-primary btn-sm" onclick="openModal('modal-finance')">+ Ajouter</button></div>
+        <div class="section-header"><div class="section-title">Finances</div><button class="btn btn-primary btn-sm" onclick="openModal('modal-finance')">+ Ajouter</button></div>
         <div class="card"><table><thead><tr><th>Description</th><th>Business</th><th>Type</th><th>Montant</th><th>Date</th><th></th></tr></thead><tbody id="finances-table"><tr><td colspan="6"><div class="empty-state">Aucune transaction encore</div></td></tr></tbody></table></div>
       </div>
+
       <div id="page-clients" class="page">
-        <div class="section-header"><div class="section-title">👥 Clients</div><button class="btn btn-primary btn-sm" onclick="openModal('modal-client')">+ Ajouter</button></div>
+        <div class="section-header"><div class="section-title">Clients</div><button class="btn btn-primary btn-sm" onclick="openModal('modal-client')">+ Ajouter</button></div>
         <div class="card"><table><thead><tr><th>Nom</th><th>Business</th><th>Email</th><th>Statut</th><th>Valeur</th><th></th></tr></thead><tbody id="clients-table-full"><tr><td colspan="6"><div class="empty-state">Aucun client encore</div></td></tr></tbody></table></div>
       </div>
+
       <div id="page-taches" class="page">
-        <div class="section-header"><div class="section-title">✅ Tâches</div><button class="btn btn-primary btn-sm" onclick="openModal('modal-task')">+ Ajouter</button></div>
-        <div class="card"><div id="taches-full-list"><div class="empty-state">Aucune tâche encore</div></div></div>
+        <div class="section-header"><div class="section-title">Taches</div><button class="btn btn-primary btn-sm" onclick="openModal('modal-task')">+ Ajouter</button></div>
+        <div class="card"><div id="taches-full-list"><div class="empty-state">Aucune tache encore</div></div></div>
       </div>
+
       <div id="page-notes" class="page">
-        <div class="section-header"><div class="section-title">📝 Notes & Documents</div><button class="btn btn-primary btn-sm" onclick="newNote()">+ Nouveau</button></div>
+        <div class="section-header"><div class="section-title">Notes et Documents</div><button class="btn btn-primary btn-sm" onclick="newNote()">+ Nouveau</button></div>
         <div id="notes-grid" class="grid-3"></div>
-        <div id="notes-empty" class="empty-state"><div style="font-size:32px;margin-bottom:8px">📝</div>Aucune note — clique sur "+ Nouveau" pour commencer !</div>
+        <div id="notes-empty" class="empty-state"><div style="font-size:32px;margin-bottom:8px">&#128221;</div>Aucune note - clique sur + Nouveau pour commencer !</div>
       </div>
-      <div id="page-b1" class="page"><div id="bpc-b1"></div></div>
-      <div id="page-b2" class="page"><div id="bpc-b2"></div></div>
-      <div id="page-b3" class="page"><div id="bpc-b3"></div></div>
-      <div id="page-b4" class="page"><div id="bpc-b4"></div></div>
+
+      <div id="dynamic-pages"></div>
+
     </div>
   </div>
 </div>
 
-<!-- NOTE EDITOR -->
 <div id="note-editor" class="note-editor">
   <div class="note-editor-header">
-    <button class="btn btn-ghost btn-sm" onclick="closeNoteEditor()">← Retour</button>
+    <button class="btn btn-ghost btn-sm" onclick="closeNoteEditor()">Retour</button>
     <input class="note-editor-title" id="note-title-input" placeholder="Titre de la note...">
-    <button class="btn btn-primary btn-sm" onclick="saveCurrentNote()">💾 Sauvegarder</button>
-    <button class="btn btn-danger btn-sm" onclick="deleteCurrentNote()">🗑️ Supprimer</button>
+    <button class="btn btn-primary btn-sm" onclick="saveCurrentNote()">Sauvegarder</button>
+    <button class="btn btn-danger btn-sm" onclick="deleteCurrentNote()">Supprimer</button>
   </div>
-  <textarea class="note-editor-content" id="note-content-input" placeholder="Commence à écrire..."></textarea>
+  <textarea class="note-editor-content" id="note-content-input" placeholder="Commence a ecrire..."></textarea>
 </div>
 
-<!-- MODALS -->
 <div id="modal-finance" class="modal-overlay">
   <div class="modal">
-    <div class="modal-title">💰 Nouvelle transaction <button class="modal-close" onclick="closeModal('modal-finance')">✕</button></div>
+    <div class="modal-title">Nouvelle transaction <button class="modal-close" onclick="closeModal('modal-finance')">x</button></div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="f-desc" placeholder="ex: Vente produit X"></div>
-      <div class="form-group"><label class="form-label">Montant (€)</label><input class="form-input" id="f-montant" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Montant (EUR)</label><input class="form-input" id="f-montant" type="number" placeholder="0"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Business</label><select class="form-select" id="f-business"><option>Business 1</option><option>Business 2</option><option>Business 3</option><option>Business 4</option></select></div>
-      <div class="form-group"><label class="form-label">Type</label><select class="form-select" id="f-type"><option>Revenu</option><option>Dépense</option></select></div>
+      <div class="form-group"><label class="form-label">Business</label><select class="form-select" id="f-business"></select></div>
+      <div class="form-group"><label class="form-label">Type</label><select class="form-select" id="f-type"><option>Revenu</option><option>Depense</option></select></div>
     </div>
     <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="f-date" type="date"></div>
     <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-finance')">Annuler</button><button class="btn btn-primary" onclick="saveFinance()">Enregistrer</button></div>
@@ -250,18 +250,18 @@ tr:last-child td{border-bottom:none}
 
 <div id="modal-client" class="modal-overlay">
   <div class="modal">
-    <div class="modal-title">👥 Nouveau client <button class="modal-close" onclick="closeModal('modal-client')">✕</button></div>
+    <div class="modal-title">Nouveau client <button class="modal-close" onclick="closeModal('modal-client')">x</button></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="c-nom" placeholder="Prénom Nom"></div>
-      <div class="form-group"><label class="form-label">Business</label><select class="form-select" id="c-business"><option>Business 1</option><option>Business 2</option><option>Business 3</option><option>Business 4</option></select></div>
+      <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="c-nom" placeholder="Prenom Nom"></div>
+      <div class="form-group"><label class="form-label">Business</label><select class="form-select" id="c-business"></select></div>
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="c-email" type="email"></div>
-      <div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" id="c-tel"></div>
+      <div class="form-group"><label class="form-label">Telephone</label><input class="form-input" id="c-tel"></div>
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Statut</label><select class="form-select" id="c-statut"><option>Actif</option><option>En attente</option><option>Inactif</option></select></div>
-      <div class="form-group"><label class="form-label">Valeur (€)</label><input class="form-input" id="c-valeur" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Valeur (EUR)</label><input class="form-input" id="c-valeur" type="number" placeholder="0"></div>
     </div>
     <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-client')">Annuler</button><button class="btn btn-primary" onclick="saveClient()">Enregistrer</button></div>
   </div>
@@ -269,44 +269,44 @@ tr:last-child td{border-bottom:none}
 
 <div id="modal-task" class="modal-overlay">
   <div class="modal">
-    <div class="modal-title">✅ Nouvelle tâche <button class="modal-close" onclick="closeModal('modal-task')">✕</button></div>
+    <div class="modal-title">Nouvelle tache <button class="modal-close" onclick="closeModal('modal-task')">x</button></div>
     <div class="form-group"><label class="form-label">Titre</label><input class="form-input" id="t-nom" placeholder="ex: Relancer client X"></div>
-    <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="t-desc" placeholder="Détails, sous-tâches, notes..."></textarea></div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="t-desc" placeholder="Details, sous-taches, notes..."></textarea></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Business</label><select class="form-select" id="t-business"><option>Business 1</option><option>Business 2</option><option>Business 3</option><option>Business 4</option></select></div>
-      <div class="form-group"><label class="form-label">Priorité</label><select class="form-select" id="t-priorite"><option>Urgent</option><option>Haute</option><option>Normale</option><option>Basse</option></select></div>
+      <div class="form-group"><label class="form-label">Business</label><select class="form-select" id="t-business"></select></div>
+      <div class="form-group"><label class="form-label">Priorite</label><select class="form-select" id="t-priorite"><option>Urgent</option><option>Haute</option><option>Normale</option><option>Basse</option></select></div>
     </div>
-    <div class="form-group"><label class="form-label">Échéance</label><input class="form-input" id="t-date" type="date"></div>
+    <div class="form-group"><label class="form-label">Echeance</label><input class="form-input" id="t-date" type="date"></div>
     <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-task')">Annuler</button><button class="btn btn-primary" onclick="saveTask()">Enregistrer</button></div>
   </div>
 </div>
 
 <div id="modal-trading" class="modal-overlay">
   <div class="modal">
-    <div class="modal-title">📋 Nouveau trade <button class="modal-close" onclick="closeModal('modal-trading')">✕</button></div>
+    <div class="modal-title">Nouveau trade <button class="modal-close" onclick="closeModal('modal-trading')">x</button></div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="tr-date" type="date"></div>
       <div class="form-group"><label class="form-label">Paire</label><input class="form-input" id="tr-paire" placeholder="ex: EUR/USD"></div>
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Direction</label><select class="form-select" id="tr-dir"><option>Long</option><option>Short</option></select></div>
-      <div class="form-group"><label class="form-label">P&L (€)</label><input class="form-input" id="tr-pnl" type="number" placeholder="ex: 150 ou -80"></div>
+      <div class="form-group"><label class="form-label">P&L (EUR)</label><input class="form-input" id="tr-pnl" type="number" placeholder="ex: 150 ou -80"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Prix entrée</label><input class="form-input" id="tr-entree" placeholder="ex: 1.0850"></div>
+      <div class="form-group"><label class="form-label">Prix entree</label><input class="form-input" id="tr-entree" placeholder="ex: 1.0850"></div>
       <div class="form-group"><label class="form-label">Prix sortie</label><input class="form-input" id="tr-sortie" placeholder="ex: 1.0920"></div>
     </div>
-    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="tr-notes" placeholder="Analyse, émotions, leçons..."></textarea></div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="tr-notes" placeholder="Analyse, emotions, lecons..."></textarea></div>
     <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-trading')">Annuler</button><button class="btn btn-primary" onclick="saveTrade()">Enregistrer</button></div>
   </div>
 </div>
 
 <div id="modal-chart-entry" class="modal-overlay">
   <div class="modal">
-    <div class="modal-title">📈 Entrée CA <button class="modal-close" onclick="closeModal('modal-chart-entry')">✕</button></div>
+    <div class="modal-title">Entree CA <button class="modal-close" onclick="closeModal('modal-chart-entry')">x</button></div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="ce-date" type="date"></div>
-      <div class="form-group"><label class="form-label">Montant (€)</label><input class="form-input" id="ce-montant" type="number" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Montant (EUR)</label><input class="form-input" id="ce-montant" type="number" placeholder="0"></div>
     </div>
     <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="ce-desc" placeholder="ex: Ventes du jour"></div>
     <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-chart-entry')">Annuler</button><button class="btn btn-primary" onclick="saveChartEntry()">Enregistrer</button></div>
@@ -315,38 +315,60 @@ tr:last-child td{border-bottom:none}
 
 <div id="modal-settings" class="modal-overlay">
   <div class="modal modal-lg">
-    <div class="modal-title">⚙️ Paramètres <button class="modal-close" onclick="closeModal('modal-settings')">✕</button></div>
-    <p style="font-size:12px;color:var(--text-muted);text-transform:uppercase;font-weight:600;letter-spacing:.04em;margin-bottom:1rem">Noms des business</p>
-    <div class="form-row"><div class="form-group"><label class="form-label">Business 1 — Nom</label><input class="form-input" id="s-b1"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t1"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Business 2 — Nom</label><input class="form-input" id="s-b2"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t2"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Business 3 — Nom</label><input class="form-input" id="s-b3"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t3"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Business 4 — Nom</label><input class="form-input" id="s-b4"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t4"></div></div>
+    <div class="modal-title">Parametres <button class="modal-close" onclick="closeModal('modal-settings')">x</button></div>
+    <p style="font-size:12px;color:var(--text-muted);text-transform:uppercase;font-weight:600;margin-bottom:1rem">Noms des business principaux</p>
+    <div class="form-row"><div class="form-group"><label class="form-label">Business 1 - Nom</label><input class="form-input" id="s-b1"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t1"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Business 2 - Nom</label><input class="form-input" id="s-b2"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t2"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Business 3 - Nom</label><input class="form-input" id="s-b3"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t3"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Business 4 - Nom</label><input class="form-input" id="s-b4"></div><div class="form-group"><label class="form-label">Type</label><input class="form-input" id="s-t4"></div></div>
     <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-settings')">Annuler</button><button class="btn btn-primary" onclick="saveSettings()">Enregistrer</button></div>
+  </div>
+</div>
+
+<div id="modal-add-business" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">Nouveau business <button class="modal-close" onclick="closeModal('modal-add-business')">x</button></div>
+    <div class="form-group"><label class="form-label">Nom du business</label><input class="form-input" id="nb-name" placeholder="ex: Mon Dropshipping"></div>
+    <div class="form-group"><label class="form-label">Type d activite</label><input class="form-input" id="nb-type" placeholder="ex: E-commerce, Freelance..."></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-add-business')">Annuler</button><button class="btn btn-primary" onclick="addBusiness()">Creer</button></div>
+  </div>
+</div>
+
+<div id="modal-doc-link" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">Ajouter un document <button class="modal-close" onclick="closeModal('modal-doc-link')">x</button></div>
+    <div class="form-group"><label class="form-label">Titre</label><input class="form-input" id="dl-title" placeholder="ex: Business Plan"></div>
+    <div class="form-group"><label class="form-label">Lien (Notion, Drive...)</label><input class="form-input" id="dl-url" placeholder="https://notion.so/..."></div>
+    <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="dl-desc" placeholder="Description optionnelle"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-doc-link')">Annuler</button><button class="btn btn-primary" onclick="saveDocLink()">Enregistrer</button></div>
   </div>
 </div>
 
 <div id="modal-module" class="modal-overlay">
   <div class="modal">
-    <div class="modal-title">➕ Ajouter un module <button class="modal-close" onclick="closeModal('modal-module')">✕</button></div>
+    <div class="modal-title">Ajouter un module <button class="modal-close" onclick="closeModal('modal-module')">x</button></div>
     <div class="module-picker-grid">
-      <div class="module-option" onclick="addModule('finances-module')"><div class="module-option-icon">💰</div><div class="module-option-name">Finances</div></div>
-      <div class="module-option" onclick="addModule('trading-journal')"><div class="module-option-icon">📋</div><div class="module-option-name">Journal Trading</div></div>
-      <div class="module-option" onclick="addModule('ca-chart')"><div class="module-option-icon">📈</div><div class="module-option-name">Graphique CA</div></div>
-      <div class="module-option" onclick="addModule('taches-module')"><div class="module-option-icon">✅</div><div class="module-option-name">Tâches</div></div>
-      <div class="module-option" onclick="addModule('clients-module')"><div class="module-option-icon">👥</div><div class="module-option-name">Clients</div></div>
-      <div class="module-option" onclick="addModule('calendrier-ca')"><div class="module-option-icon">📅</div><div class="module-option-name">Calendrier CA</div></div>
+      <div class="module-option" onclick="addModule('finances-module')"><div class="module-option-icon">&#128176;</div><div class="module-option-name">Finances</div></div>
+      <div class="module-option" onclick="addModule('trading-journal')"><div class="module-option-icon">&#128203;</div><div class="module-option-name">Journal Trading</div></div>
+      <div class="module-option" onclick="addModule('ca-chart')"><div class="module-option-icon">&#128200;</div><div class="module-option-name">Graphique CA</div></div>
+      <div class="module-option" onclick="addModule('taches-module')"><div class="module-option-icon">&#9989;</div><div class="module-option-name">Taches</div></div>
+      <div class="module-option" onclick="addModule('clients-module')"><div class="module-option-icon">&#128101;</div><div class="module-option-name">Clients</div></div>
+      <div class="module-option" onclick="addModule('notion-docs')"><div class="module-option-icon">&#128206;</div><div class="module-option-name">Docs et Liens</div></div>
     </div>
   </div>
 </div>
 
 <script>
 var PWD = '907590';
+
 document.getElementById('login-btn').addEventListener('click', checkPwd);
 document.getElementById('pwd-input').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') checkPwd();
 });
+
 function checkPwd() {
-  if (document.getElementById('pwd-input').value === PWD) {
+  var val = document.getElementById('pwd-input').value;
+  if (val === PWD) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').classList.add('visible');
     sessionStorage.setItem('auth', '1');
@@ -356,6 +378,7 @@ function checkPwd() {
     document.getElementById('pwd-input').value = '';
   }
 }
+
 if (sessionStorage.getItem('auth') === '1') {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').classList.add('visible');
@@ -369,30 +392,61 @@ var state = {
   notes: JSON.parse(localStorage.getItem('notes') || '[]'),
   trading: JSON.parse(localStorage.getItem('trading') || '[]'),
   chartData: JSON.parse(localStorage.getItem('chartData') || '{}'),
+  docLinks: JSON.parse(localStorage.getItem('docLinks') || '{}'),
   bNames: JSON.parse(localStorage.getItem('bNames') || '["Business 1","Business 2","Business 3","Business 4"]'),
   bTypes: JSON.parse(localStorage.getItem('bTypes') || '["E-commerce","E-commerce","Freelance","Services"]'),
-  modules: JSON.parse(localStorage.getItem('modules') || '{"b1":[],"b2":[],"b3":[],"b4":[]}')
+  modules: JSON.parse(localStorage.getItem('modules') || '{"b1":[],"b2":[],"b3":[],"b4":[]}'),
+  extraBiz: JSON.parse(localStorage.getItem('extraBiz') || '[]')
 };
 
 var currentBusiness = null;
 var currentNote = null;
 var currentChartBid = null;
 var currentChartMid = null;
+var currentDocBid = null;
+var currentModBid = null;
 var calState = { year: new Date().getFullYear(), month: new Date().getMonth() };
+
 var bColors = ['#7B6EF6','#22C48A','#F06A3A','#3A9EF5'];
 var bBadgeClass = ['bp','bg','br','bb'];
 var pBadge = { Urgent:'br', Haute:'ba', Normale:'bb', Basse:'bgr' };
 var sBadge = { Actif:'bg', 'En attente':'ba', Inactif:'bgr' };
 
 function save() {
-  var keys = ['finances','clients','taches','notes','trading','chartData','bNames','bTypes','modules'];
+  var keys = ['finances','clients','taches','notes','trading','chartData','docLinks','bNames','bTypes','modules','extraBiz'];
   keys.forEach(function(k) { localStorage.setItem(k, JSON.stringify(state[k])); });
+}
+
+function getAllBusinessNames() {
+  var names = state.bNames.slice();
+  state.extraBiz.forEach(function(b) { names.push(b.name); });
+  return names;
+}
+
+function refreshSelects() {
+  var names = getAllBusinessNames();
+  var ids = ['f-business','c-business','t-business'];
+  ids.forEach(function(id) {
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    var cur = sel.value;
+    sel.innerHTML = '';
+    names.forEach(function(n) {
+      var opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = n;
+      sel.appendChild(opt);
+    });
+    if (names.indexOf(cur) !== -1) sel.value = cur;
+  });
 }
 
 function showPage(id, el) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.sidebar-item').forEach(function(s) { s.classList.remove('active'); });
-  document.getElementById('page-' + id).classList.add('active');
+  var pg = document.getElementById('page-' + id);
+  if (!pg) return;
+  pg.classList.add('active');
   if (el) {
     el.classList.add('active');
   } else {
@@ -401,13 +455,36 @@ function showPage(id, el) {
       if (oc.indexOf("'" + id + "'") !== -1) s.classList.add('active');
     });
   }
-  var n = parseInt(id.replace('b','')) - 1;
-  var titles = { dashboard:'Tableau de bord', finances:'Finances', clients:'Clients', taches:'Tâches', notes:'Notes & Documents' };
-  document.getElementById('topbar-title').textContent = titles[id] || state.bNames[n] || id;
-  document.getElementById('topbar-sub').textContent = id.charAt(0) === 'b' ? state.bTypes[n] : '';
-  if (id.charAt(0) === 'b') { currentBusiness = id; renderBusinessPage(id); }
+  var titles = { dashboard:'Tableau de bord', finances:'Finances', clients:'Clients', taches:'Taches', notes:'Notes' };
+  if (titles[id]) {
+    document.getElementById('topbar-title').textContent = titles[id];
+    document.getElementById('topbar-sub').textContent = '';
+  }
   if (id === 'notes') renderNotes();
+  if (id.startsWith('b')) {
+    currentBusiness = id;
+    var n = parseInt(id.replace('b','')) - 1;
+    document.getElementById('topbar-title').textContent = state.bNames[n] || id;
+    document.getElementById('topbar-sub').textContent = state.bTypes[n] || '';
+    renderBizPage(id, state.bNames[n], state.bTypes[n]);
+  }
+  if (id.startsWith('eb')) {
+    currentBusiness = id;
+    var biz = getBizById(id);
+    if (biz) {
+      document.getElementById('topbar-title').textContent = biz.name;
+      document.getElementById('topbar-sub').textContent = biz.type;
+      renderBizPage(id, biz.name, biz.type);
+    }
+  }
   updateAll();
+}
+
+function getBizById(id) {
+  for (var i = 0; i < state.extraBiz.length; i++) {
+    if (state.extraBiz[i].id === id) return state.extraBiz[i];
+  }
+  return null;
 }
 
 function openModal(id) { document.getElementById(id).classList.add('open'); }
@@ -465,13 +542,17 @@ function saveTask() {
 function toggleTask(i) {
   state.taches[i].done = !state.taches[i].done;
   save(); updateAll();
-  if (currentBusiness) renderBusinessPage(currentBusiness);
+  if (currentBusiness) {
+    var biz = currentBusiness.startsWith('eb') ? getBizById(currentBusiness) : null;
+    var bName = biz ? biz.name : (state.bNames[parseInt(currentBusiness.replace('b',''))-1] || '');
+    renderBizPage(currentBusiness, bName, biz ? biz.type : '');
+  }
 }
 
 function deleteFinance(i) { state.finances.splice(i,1); save(); updateAll(); }
 function deleteClient(i) { state.clients.splice(i,1); save(); updateAll(); }
 function deleteTask(i) { state.taches.splice(i,1); save(); updateAll(); }
-function deleteTrade(i) { state.trading.splice(i,1); save(); if(currentBusiness) renderBusinessPage(currentBusiness); }
+function deleteTrade(i) { state.trading.splice(i,1); save(); if(currentBusiness) showPage(currentBusiness, null); }
 
 function openSettings() {
   state.bNames.forEach(function(n,i) { document.getElementById('s-b'+(i+1)).value = n; });
@@ -481,26 +562,51 @@ function openSettings() {
 
 function saveSettings() {
   state.bNames = [1,2,3,4].map(function(i) { return document.getElementById('s-b'+i).value || 'Business '+i; });
-  state.bTypes = [1,2,3,4].map(function(i) { return document.getElementById('s-t'+i).value || 'E-commerce'; });
-  save(); applyNames(); closeModal('modal-settings');
+  state.bTypes = [1,2,3,4].map(function(i) { return document.getElementById('s-t'+i).value || 'Activite'; });
+  save(); renderSidebar(); refreshSelects(); updateAll(); closeModal('modal-settings');
 }
 
-function applyNames() {
-  state.bNames.forEach(function(n,i) {
-    document.querySelectorAll('.bname-'+i).forEach(function(el) { el.textContent = n; });
+function addBusiness() {
+  var name = document.getElementById('nb-name').value.trim();
+  var type = document.getElementById('nb-type').value.trim() || 'Activite';
+  if (!name) return;
+  var bid = 'eb' + Date.now();
+  state.extraBiz.push({ id: bid, name: name, type: type });
+  if (!state.modules[bid]) state.modules[bid] = [];
+  save(); renderSidebar(); refreshSelects(); closeModal('modal-add-business');
+  document.getElementById('nb-name').value = '';
+  document.getElementById('nb-type').value = '';
+}
+
+function deleteBusiness(bid) {
+  if (!confirm('Supprimer ce business ?')) return;
+  state.extraBiz = state.extraBiz.filter(function(b) { return b.id !== bid; });
+  save(); renderSidebar(); refreshSelects();
+  showPage('dashboard', document.querySelector('.sidebar-item'));
+}
+
+function renderSidebar() {
+  var colors = ['#7B6EF6','#22C48A','#F06A3A','#3A9EF5'];
+  var extraColors = ['#A855F7','#EC4899','#F59E0B','#06B6D4','#84CC16','#EF4444'];
+  var html = '';
+  state.bNames.forEach(function(n, i) {
+    html += '<div class="sidebar-item" onclick="showPage(\'b'+(i+1)+'\',this)"><div class="bdot" style="background:'+colors[i]+'"></div>'+n+'</div>';
   });
-  state.bTypes.forEach(function(t,i) {
-    document.querySelectorAll('.btype-'+i).forEach(function(el) { el.textContent = t; });
+  state.extraBiz.forEach(function(b, i) {
+    var c = extraColors[i % extraColors.length];
+    html += '<div class="sidebar-item" onclick="showPage(\''+b.id+'\',this)"><div class="bdot" style="background:'+c+'"></div>'+b.name+'</div>';
   });
-  var sels = ['f-business','c-business','t-business'];
-  sels.forEach(function(sid) {
-    var sel = document.getElementById(sid);
-    if (sel) {
-      state.bNames.forEach(function(n,i) {
-        if (sel.options[i]) { sel.options[i].text = n; sel.options[i].value = n; }
-      });
-    }
+  document.getElementById('sidebar-businesses').innerHTML = html;
+
+  var pagesContainer = document.getElementById('dynamic-pages');
+  var pagesHtml = '';
+  state.bNames.forEach(function(n, i) {
+    pagesHtml += '<div id="page-b'+(i+1)+'" class="page"><div id="bpc-b'+(i+1)+'"></div></div>';
   });
+  state.extraBiz.forEach(function(b) {
+    pagesHtml += '<div id="page-'+b.id+'" class="page"><div id="bpc-'+b.id+'"></div></div>';
+  });
+  pagesContainer.innerHTML = pagesHtml;
 }
 
 function newNote() {
@@ -539,11 +645,7 @@ function saveCurrentNote() {
 
 function deleteCurrentNote() {
   if (!currentNote) return;
-  var newNotes = [];
-  for (var i = 0; i < state.notes.length; i++) {
-    if (state.notes[i].id !== currentNote.id) newNotes.push(state.notes[i]);
-  }
-  state.notes = newNotes;
+  state.notes = state.notes.filter(function(n) { return n.id !== currentNote.id; });
   save(); updateAll();
   document.getElementById('note-editor').classList.remove('open');
   renderNotes();
@@ -554,50 +656,34 @@ function closeNoteEditor() { saveCurrentNote(); }
 function renderNotes() {
   var grid = document.getElementById('notes-grid');
   var empty = document.getElementById('notes-empty');
-  if (state.notes.length === 0) {
-    grid.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
+  if (state.notes.length === 0) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  var html = '';
-  state.notes.forEach(function(n) {
-    html += '<div class="note-card" onclick="openNote(' + n.id + ')">';
-    html += '<div class="note-title">' + (n.title || 'Sans titre') + '</div>';
-    html += '<div class="note-preview">' + (n.content || '').replace(/</g,'&lt;') + '</div>';
-    html += '<div class="note-meta">' + n.date + '</div></div>';
-  });
-  grid.innerHTML = html;
+  grid.innerHTML = state.notes.map(function(n) {
+    return '<div class="note-card" onclick="openNote('+n.id+')">' +
+      '<div class="note-title">'+(n.title||'Sans titre')+'</div>' +
+      '<div class="note-preview">'+(n.content||'').replace(/</g,'&lt;')+'</div>' +
+      '<div class="note-meta">'+n.date+'</div></div>';
+  }).join('');
 }
 
-function openModulePicker(bid) {
-  currentBusiness = bid;
-  openModal('modal-module');
-}
+function openModulePicker(bid) { currentModBid = bid; openModal('modal-module'); }
 
 function addModule(type) {
-  if (!currentBusiness) return;
-  if (!state.modules[currentBusiness]) state.modules[currentBusiness] = [];
-  state.modules[currentBusiness].push({ id: Date.now(), type: type });
-  save();
-  closeModal('modal-module');
-  renderBusinessPage(currentBusiness);
+  if (!currentModBid) return;
+  if (!state.modules[currentModBid]) state.modules[currentModBid] = [];
+  state.modules[currentModBid].push({ id: Date.now(), type: type });
+  save(); closeModal('modal-module');
+  if (currentBusiness) showPage(currentBusiness, null);
 }
 
 function removeModule(bid, id) {
-  var newMods = [];
-  var mods = state.modules[bid] || [];
-  for (var i = 0; i < mods.length; i++) {
-    if (mods[i].id !== id) newMods.push(mods[i]);
-  }
-  state.modules[bid] = newMods;
+  state.modules[bid] = (state.modules[bid]||[]).filter(function(m) { return m.id !== id; });
   save();
-  renderBusinessPage(bid);
+  if (currentBusiness) showPage(currentBusiness, null);
 }
 
 function openChartEntry(bid, mid) {
-  currentChartBid = bid;
-  currentChartMid = mid;
+  currentChartBid = bid; currentChartMid = mid;
   document.getElementById('ce-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('ce-montant').value = '';
   document.getElementById('ce-desc').value = '';
@@ -615,10 +701,9 @@ function saveChartEntry() {
     desc: document.getElementById('ce-desc').value
   });
   state.chartData[key].sort(function(a,b) { return a.date.localeCompare(b.date); });
-  save();
-  closeModal('modal-chart-entry');
-  if (currentBusiness) renderBusinessPage(currentBusiness);
-  setTimeout(function() { updateChart(currentChartMid, currentChartBid); }, 200);
+  save(); closeModal('modal-chart-entry');
+  if (currentBusiness) showPage(currentBusiness, null);
+  setTimeout(function() { updateChart(currentChartMid, currentChartBid); }, 300);
 }
 
 function updateChart(mid, bid) {
@@ -654,16 +739,14 @@ function updateChart(mid, bid) {
         data: values,
         backgroundColor: values.map(function(v) { return v >= 0 ? 'rgba(34,196,138,.25)' : 'rgba(226,75,74,.25)'; }),
         borderColor: values.map(function(v) { return v >= 0 ? '#22C48A' : '#E24B4A'; }),
-        borderWidth: 2,
-        borderRadius: 6
+        borderWidth: 2, borderRadius: 6
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { grid: { color: '#F1EFE8' }, ticks: { callback: function(v) { return v + '€'; } } },
+        y: { grid: { color: '#F1EFE8' }, ticks: { callback: function(v) { return v + 'EUR'; } } },
         x: { grid: { display: false } }
       }
     }
@@ -673,35 +756,32 @@ function updateChart(mid, bid) {
 function calDayClick(bName, dateStr) {
   var calData = JSON.parse(localStorage.getItem('calData') || '{}');
   var existing = (calData[bName] || {})[dateStr] || '';
-  var val = prompt('CA du ' + dateStr + ' (€) :', existing);
+  var val = prompt('CA du ' + dateStr + ' (EUR) :', existing);
   if (val === null) return;
   if (!calData[bName]) calData[bName] = {};
-  if (val === '' || val === '0') {
-    delete calData[bName][dateStr];
-  } else {
-    calData[bName][dateStr] = parseFloat(val) || 0;
-  }
+  if (val === '' || val === '0') { delete calData[bName][dateStr]; }
+  else { calData[bName][dateStr] = parseFloat(val) || 0; }
   localStorage.setItem('calData', JSON.stringify(calData));
-  if (currentBusiness) renderBusinessPage(currentBusiness);
+  if (currentBusiness) showPage(currentBusiness, null);
 }
 
-function calPrev(bid) {
+function calPrev() {
   calState.month--;
   if (calState.month < 0) { calState.month = 11; calState.year--; }
-  if (currentBusiness) renderBusinessPage(currentBusiness);
+  if (currentBusiness) showPage(currentBusiness, null);
 }
 
-function calNext(bid) {
+function calNext() {
   calState.month++;
   if (calState.month > 11) { calState.month = 0; calState.year++; }
-  if (currentBusiness) renderBusinessPage(currentBusiness);
+  if (currentBusiness) showPage(currentBusiness, null);
 }
 
 function renderCalendar(bName) {
   var year = calState.year;
   var month = calState.month;
-  var monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  var dayNames = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  var mNames = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  var dNames = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
   var calData = JSON.parse(localStorage.getItem('calData') || '{}');
   var entries = calData[bName] || {};
   var firstDay = new Date(year, month, 1);
@@ -710,31 +790,29 @@ function renderCalendar(bName) {
   var todayStr = new Date().toISOString().split('T')[0];
   var html = '<div class="card">';
   html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
-  html += '<button class="btn btn-ghost btn-sm" onclick="calPrev()">‹</button>';
-  html += '<strong>' + monthNames[month] + ' ' + year + '</strong>';
-  html += '<button class="btn btn-ghost btn-sm" onclick="calNext()">›</button></div>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="calPrev()">Precedent</button>';
+  html += '<strong>' + mNames[month] + ' ' + year + '</strong>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="calNext()">Suivant</button></div>';
   html += '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">';
-  dayNames.forEach(function(d) {
-    html += '<div style="font-size:10px;font-weight:600;color:var(--text-muted);text-align:center;padding:4px 0">' + d + '</div>';
-  });
+  dNames.forEach(function(d) { html += '<div style="font-size:10px;font-weight:600;color:var(--text-muted);text-align:center;padding:4px 0">' + d + '</div>'; });
   for (var i = 0; i < startDow; i++) html += '<div></div>';
-  var monthTotal = 0;
+  var total = 0;
   for (var d = 1; d <= lastDay.getDate(); d++) {
-    var dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-    var amount = entries[dateStr] !== undefined ? entries[dateStr] : null;
-    if (amount !== null) monthTotal += amount;
-    var isToday = dateStr === todayStr;
-    html += '<div onclick="calDayClick(\'' + bName + '\',\'' + dateStr + '\')" style="border-radius:6px;padding:4px;min-height:44px;border:1px solid ' + (isToday ? 'var(--accent)' : 'var(--border)') + ';cursor:pointer;background:' + (isToday ? '#F0EFFE' : 'transparent') + '">';
+    var ds = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    var amt = entries[ds] !== undefined ? entries[ds] : null;
+    if (amt !== null) total += amt;
+    var isToday = ds === todayStr;
+    var brd = isToday ? 'var(--accent)' : 'var(--border)';
+    var bg = isToday ? '#F0EFFE' : 'transparent';
+    html += '<div onclick="calDayClick(\'' + bName + '\',\'' + ds + '\')" style="border-radius:6px;padding:4px;min-height:44px;border:1px solid ' + brd + ';cursor:pointer;background:' + bg + '">';
     html += '<div style="font-size:10px;font-weight:600;color:var(--text-muted)">' + d + '</div>';
-    if (amount !== null) {
-      html += '<div style="font-size:11px;font-weight:600;color:' + (amount >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (amount >= 0 ? '+' : '') + amount + '€</div>';
-    }
+    if (amt !== null) html += '<div style="font-size:11px;font-weight:600;color:' + (amt>=0?'var(--green)':'var(--red)') + '">' + (amt>=0?'+':'') + amt + '</div>';
     html += '</div>';
   }
   html += '</div>';
   html += '<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">';
-  html += '<span style="color:var(--text-muted)">Total ' + monthNames[month] + '</span>';
-  html += '<strong style="color:' + (monthTotal >= 0 ? 'var(--green)' : 'var(--red)') + '">' + (monthTotal >= 0 ? '+' : '') + monthTotal.toLocaleString('fr-FR') + ' €</strong></div>';
+  html += '<span style="color:var(--text-muted)">Total ' + mNames[month] + '</span>';
+  html += '<strong style="color:' + (total>=0?'var(--green)':'var(--red)') + '">' + (total>=0?'+':'') + total.toLocaleString('fr-FR') + ' EUR</strong></div>';
   html += '</div>';
   return html;
 }
@@ -742,7 +820,15 @@ function renderCalendar(bName) {
 function saveTrade() {
   var paire = document.getElementById('tr-paire').value.trim();
   if (!paire) return;
-  var bName = currentBusiness ? state.bNames[parseInt(currentBusiness.replace('b',''))-1] : state.bNames[0];
+  var bName = '';
+  if (currentBusiness) {
+    if (currentBusiness.startsWith('eb')) {
+      var bz = getBizById(currentBusiness);
+      bName = bz ? bz.name : '';
+    } else {
+      bName = state.bNames[parseInt(currentBusiness.replace('b',''))-1] || '';
+    }
+  }
   state.trading.push({
     business: bName,
     date: document.getElementById('tr-date').value || new Date().toISOString().split('T')[0],
@@ -753,9 +839,8 @@ function saveTrade() {
     sortie: document.getElementById('tr-sortie').value,
     notes: document.getElementById('tr-notes').value
   });
-  save();
-  closeModal('modal-trading');
-  if (currentBusiness) renderBusinessPage(currentBusiness);
+  save(); closeModal('modal-trading');
+  if (currentBusiness) showPage(currentBusiness, null);
   document.getElementById('tr-paire').value = '';
   document.getElementById('tr-pnl').value = '';
   document.getElementById('tr-entree').value = '';
@@ -763,83 +848,122 @@ function saveTrade() {
   document.getElementById('tr-notes').value = '';
 }
 
-function renderModule(bid, m) {
-  var n = parseInt(bid.replace('b','')) - 1;
-  var bName = state.bNames[n];
-  var removeBtn = '<button class="module-remove" onclick="removeModule(\'' + bid + '\',' + m.id + ')">✕</button>';
+function openDocModal(bid) {
+  currentDocBid = bid;
+  document.getElementById('dl-title').value = '';
+  document.getElementById('dl-url').value = '';
+  document.getElementById('dl-desc').value = '';
+  openModal('modal-doc-link');
+}
+
+function saveDocLink() {
+  var title = document.getElementById('dl-title').value.trim();
+  var url = document.getElementById('dl-url').value.trim();
+  if (!title || !url) return;
+  if (!state.docLinks[currentDocBid]) state.docLinks[currentDocBid] = [];
+  state.docLinks[currentDocBid].push({ title: title, url: url, desc: document.getElementById('dl-desc').value });
+  save(); closeModal('modal-doc-link');
+  if (currentBusiness) showPage(currentBusiness, null);
+}
+
+function deleteDocLink(bid, idx) {
+  if (!state.docLinks[bid]) return;
+  state.docLinks[bid].splice(idx, 1);
+  save();
+  if (currentBusiness) showPage(currentBusiness, null);
+}
+
+function openFinanceFor(bName) {
+  var sel = document.getElementById('f-business');
+  if (sel) {
+    var names = getAllBusinessNames();
+    var idx = names.indexOf(bName);
+    if (idx >= 0) sel.selectedIndex = idx;
+  }
+  openModal('modal-finance');
+}
+
+function renderModule(bid, bName, m) {
+  var rb = '<button class="module-remove" onclick="removeModule(\'' + bid + '\',' + m.id + ')">x</button>';
 
   if (m.type === 'finances-module') {
     var mf = state.finances.filter(function(f) { return f.business === bName; });
     var mr = mf.filter(function(f) { return f.type === 'Revenu'; }).reduce(function(s,f) { return s+f.montant; }, 0);
-    var md = mf.filter(function(f) { return f.type === 'Dépense'; }).reduce(function(s,f) { return s+f.montant; }, 0);
+    var md = mf.filter(function(f) { return f.type === 'Depense'; }).reduce(function(s,f) { return s+f.montant; }, 0);
     var rows = mf.length === 0 ? '<div class="empty-state">Aucune transaction</div>' :
-      '<table><thead><tr><th>Description</th><th>Type</th><th>Montant</th><th>Date</th><th></th></tr></thead><tbody>' +
+      '<table style="margin-top:10px"><thead><tr><th>Description</th><th>Type</th><th>Montant</th><th></th></tr></thead><tbody>' +
       mf.map(function(f) {
         var ri = state.finances.indexOf(f);
-        return '<tr><td>' + f.desc + '</td><td><span class="badge ' + (f.type==='Revenu'?'bg':'br') + '">' + f.type + '</span></td><td><strong style="color:' + (f.type==='Revenu'?'var(--green)':'var(--red)') + '">' + f.montant.toLocaleString('fr-FR') + ' €</strong></td><td>' + f.date + '</td><td><button class="btn btn-danger btn-sm" onclick="deleteFinance(' + ri + ')">✕</button></td></tr>';
+        return '<tr><td>'+f.desc+'</td><td><span class="badge '+(f.type==='Revenu'?'bg':'br')+'">'+f.type+'</span></td><td><strong style="color:'+(f.type==='Revenu'?'var(--green)':'var(--red)')+'">'+f.montant.toLocaleString('fr-FR')+' EUR</strong></td><td><button class="btn btn-danger btn-sm" onclick="deleteFinance('+ri+')">x</button></td></tr>';
       }).join('') + '</tbody></table>';
-    return '<div class="module-wrapper">' + removeBtn + '<div class="card"><div class="card-title">💰 Finances <button class="btn btn-primary btn-sm" onclick="openFinanceFor(\'' + bName + '\')">+ Ajouter</button></div><div style="display:flex;gap:1rem;margin-bottom:1rem"><div class="metric-card" style="flex:1;padding:.75rem"><div class="metric-label">Revenus</div><div class="metric-value" style="font-size:20px;color:var(--green)">' + mr.toLocaleString('fr-FR') + ' €</div></div><div class="metric-card" style="flex:1;padding:.75rem"><div class="metric-label">Dépenses</div><div class="metric-value" style="font-size:20px;color:var(--red)">' + md.toLocaleString('fr-FR') + ' €</div></div><div class="metric-card" style="flex:1;padding:.75rem"><div class="metric-label">Net</div><div class="metric-value" style="font-size:20px;color:' + (mr-md>=0?'var(--green)':'var(--red)') + '">' + (mr-md).toLocaleString('fr-FR') + ' €</div></div></div>' + rows + '</div></div>';
+    return '<div class="module-wrapper">'+rb+'<div class="card"><div class="card-title">Finances <button class="btn btn-primary btn-sm" onclick="openFinanceFor(\''+bName+'\')">+ Ajouter</button></div><div style="display:flex;gap:1rem;margin-bottom:10px"><div class="metric-card" style="flex:1;padding:.75rem"><div class="metric-label">Revenus</div><div class="metric-value" style="font-size:20px;color:var(--green)">'+mr.toLocaleString('fr-FR')+' EUR</div></div><div class="metric-card" style="flex:1;padding:.75rem"><div class="metric-label">Depenses</div><div class="metric-value" style="font-size:20px;color:var(--red)">'+md.toLocaleString('fr-FR')+' EUR</div></div><div class="metric-card" style="flex:1;padding:.75rem"><div class="metric-label">Net</div><div class="metric-value" style="font-size:20px;color:'+(mr-md>=0?'var(--green)':'var(--red)')+'">'+( mr-md).toLocaleString('fr-FR')+' EUR</div></div></div>'+rows+'</div></div>';
   }
 
   if (m.type === 'trading-journal') {
     var rows2 = state.trading.filter(function(t) { return t.business === bName; });
-    var tbody = rows2.length === 0 ? '<tr><td colspan="7"><div class="empty-state">Aucun trade encore</div></td></tr>' :
+    var tbody2 = rows2.length === 0 ? '<tr><td colspan="7"><div class="empty-state">Aucun trade</div></td></tr>' :
       rows2.map(function(t) {
         var ri = state.trading.indexOf(t);
         var pnl = parseFloat(t.pnl) || 0;
-        return '<tr><td>' + t.date + '</td><td><strong>' + t.paire + '</strong></td><td><span class="badge ' + (t.dir==='Long'?'bg':'br') + '">' + t.dir + '</span></td><td>' + t.entree + '</td><td>' + t.sortie + '</td><td><strong style="color:' + (pnl>=0?'var(--green)':'var(--red)') + '">' + pnl + ' €</strong></td><td><button class="btn btn-danger btn-sm" onclick="deleteTrade(' + ri + ')">✕</button></td></tr>';
+        return '<tr><td>'+t.date+'</td><td><strong>'+t.paire+'</strong></td><td><span class="badge '+(t.dir==='Long'?'bg':'br')+'">'+t.dir+'</span></td><td>'+t.entree+'</td><td>'+t.sortie+'</td><td><strong style="color:'+(pnl>=0?'var(--green)':'var(--red)')+'">'+pnl+' EUR</strong></td><td><button class="btn btn-danger btn-sm" onclick="deleteTrade('+ri+')">x</button></td></tr>';
       }).join('');
-    return '<div class="module-wrapper">' + removeBtn + '<div class="card"><div class="card-title">📋 Journal Trading <button class="btn btn-primary btn-sm" onclick="openModal(\'modal-trading\')">+ Trade</button></div><div style="overflow-x:auto"><table><thead><tr><th>Date</th><th>Paire</th><th>Dir.</th><th>Entrée</th><th>Sortie</th><th>P&L</th><th></th></tr></thead><tbody>' + tbody + '</tbody></table></div></div></div>';
+    return '<div class="module-wrapper">'+rb+'<div class="card"><div class="card-title">Journal Trading <button class="btn btn-primary btn-sm" onclick="openModal(\'modal-trading\')">+ Trade</button></div><div style="overflow-x:auto"><table><thead><tr><th>Date</th><th>Paire</th><th>Dir.</th><th>Entree</th><th>Sortie</th><th>P&L</th><th></th></tr></thead><tbody>'+tbody2+'</tbody></table></div></div></div>';
   }
 
   if (m.type === 'ca-chart') {
-    return '<div class="module-wrapper">' + removeBtn + '<div class="card"><div class="card-title">📈 Évolution CA <div style="display:flex;gap:6px;align-items:center"><select class="form-select" style="padding:4px 8px;font-size:12px;width:auto" id="period-' + m.id + '" onchange="updateChart(' + m.id + ',\'' + bid + '\')"><option value="day">Par jour</option><option value="week">Par semaine</option><option value="month">Par mois</option></select><button class="btn btn-primary btn-sm" onclick="openChartEntry(\'' + bid + '\',' + m.id + ')">+ Entrée</button></div></div><div class="chart-container"><canvas id="chart-' + m.id + '"></canvas></div></div></div>';
+    return '<div class="module-wrapper">'+rb+'<div class="card"><div class="card-title">Graphique CA <div style="display:flex;gap:6px;align-items:center"><select class="form-select" style="padding:4px 8px;font-size:12px;width:auto" id="period-'+m.id+'" onchange="updateChart('+m.id+',\''+bid+'\')"><option value="day">Par jour</option><option value="week">Par semaine</option><option value="month">Par mois</option></select><button class="btn btn-primary btn-sm" onclick="openChartEntry(\''+bid+'\','+m.id+')">+ Entree</button></div></div><div class="chart-container"><canvas id="chart-'+m.id+'"></canvas></div></div></div>';
   }
 
   if (m.type === 'taches-module') {
     var mt = state.taches.filter(function(t) { return t.business === bName && !t.done; });
-    var thtml = mt.length === 0 ? '<div class="empty-state">Aucune tâche</div>' :
+    var thtml = mt.length === 0 ? '<div class="empty-state">Aucune tache</div>' :
       mt.map(function(t) {
         var ri = state.taches.indexOf(t);
-        return '<div class="task-item"><div class="task-check" onclick="toggleTask(' + ri + ')"></div><div class="task-content"><div class="task-name">' + t.nom + '</div>' + (t.desc ? '<div class="task-desc">' + t.desc + '</div>' : '') + '</div><span class="badge ' + pBadge[t.priorite] + '">' + t.priorite + '</span></div>';
+        return '<div class="task-item"><div class="task-check" onclick="toggleTask('+ri+')"></div><div class="task-content"><div class="task-name">'+t.nom+'</div>'+(t.desc?'<div class="task-desc">'+t.desc+'</div>':'')+'</div><span class="badge '+pBadge[t.priorite]+'">'+t.priorite+'</span></div>';
       }).join('');
-    return '<div class="module-wrapper">' + removeBtn + '<div class="card"><div class="card-title">✅ Tâches <button class="btn btn-ghost btn-sm" onclick="openModal(\'modal-task\')">+</button></div>' + thtml + '</div></div>';
+    return '<div class="module-wrapper">'+rb+'<div class="card"><div class="card-title">Taches <button class="btn btn-ghost btn-sm" onclick="openModal(\'modal-task\')">+</button></div>'+thtml+'</div></div>';
   }
 
   if (m.type === 'clients-module') {
     var mc = state.clients.filter(function(c) { return c.business === bName; });
     var chtml = mc.length === 0 ? '<div class="empty-state">Aucun client</div>' :
       '<table><thead><tr><th>Nom</th><th>Statut</th><th>Valeur</th></tr></thead><tbody>' +
-      mc.map(function(c) {
-        return '<tr><td>' + c.nom + '</td><td><span class="badge ' + sBadge[c.statut] + '">' + c.statut + '</span></td><td>' + c.valeur.toLocaleString('fr-FR') + ' €</td></tr>';
-      }).join('') + '</tbody></table>';
-    return '<div class="module-wrapper">' + removeBtn + '<div class="card"><div class="card-title">👥 Clients (' + mc.length + ')</div>' + chtml + '</div></div>';
+      mc.map(function(c) { return '<tr><td>'+c.nom+'</td><td><span class="badge '+sBadge[c.statut]+'">'+c.statut+'</span></td><td>'+c.valeur.toLocaleString('fr-FR')+' EUR</td></tr>'; }).join('') +
+      '</tbody></table>';
+    return '<div class="module-wrapper">'+rb+'<div class="card"><div class="card-title">Clients ('+mc.length+')</div>'+chtml+'</div></div>';
   }
 
-  if (m.type === 'calendrier-ca') {
-    return '<div class="module-wrapper">' + removeBtn + renderCalendar(bName) + '</div>';
+  if (m.type === 'notion-docs') {
+    var docs = state.docLinks[bid] || [];
+    var docRows = docs.length === 0 ? '<div class="empty-state">Aucun document</div>' :
+      docs.map(function(d, di) {
+        return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-size:13px;font-weight:600">'+d.title+'</div>'+(d.desc?'<div style="font-size:12px;color:var(--text-muted)">'+d.desc+'</div>':'')+'</div><a href="'+d.url+'" target="_blank" class="btn btn-ghost btn-sm">Ouvrir</a> <button class="btn btn-danger btn-sm" onclick="deleteDocLink(\''+bid+'\','+di+')">x</button></div>';
+      }).join('');
+    return '<div class="module-wrapper">'+rb+'<div class="card"><div class="card-title">Docs et Liens <button class="btn btn-primary btn-sm" onclick="openDocModal(\''+bid+'\')">+ Ajouter</button></div>'+docRows+'</div></div>';
   }
 
   return '';
 }
 
-function renderBusinessPage(bid) {
-  var n = parseInt(bid.replace('b','')) - 1;
-  var bName = state.bNames[n];
-  var emojis = ['🛍️','🛒','💼','🔧'];
-  var bgColors = ['#EEEDFE','#E1F5EE','#FAECE7','#E6F1FB'];
+function renderBizPage(bid, bName, bType) {
+  var emojis = { b1:'&#128717;', b2:'&#128705;', b3:'&#128188;', b4:'&#128295;' };
+  var emoji = emojis[bid] || '&#127978;';
+  var bgColors = { b1:'#EEEDFE', b2:'#E1F5EE', b3:'#FAECE7', b4:'#E6F1FB' };
+  var bg = bgColors[bid] || '#F0EFFE';
   var mods = state.modules[bid] || [];
-  var modsHtml = mods.map(function(m) { return renderModule(bid, m); }).join('');
+  var modsHtml = mods.map(function(m) { return renderModule(bid, bName, m); }).join('');
   if (mods.length === 0) {
-    modsHtml = '<div class="empty-state" style="padding:3rem"><div style="font-size:32px;margin-bottom:8px">🧩</div><div style="margin-bottom:1rem">Aucun module — clique pour ajouter</div><button class="btn btn-primary" onclick="openModulePicker(\'' + bid + '\')">➕ Ajouter un module</button></div>';
+    modsHtml = '<div class="empty-state" style="padding:3rem"><div style="font-size:32px;margin-bottom:8px">&#129513;</div><div style="margin-bottom:1rem">Aucun module</div><button class="btn btn-primary" onclick="openModulePicker(\''+bid+'\')">+ Ajouter un module</button></div>';
   }
-  document.getElementById('bpc-' + bid).innerHTML =
+  var delBtn = bid.startsWith('eb') ? '<button class="btn btn-danger btn-sm" onclick="deleteBusiness(\''+bid+'\')">Supprimer</button>' : '';
+  var el = document.getElementById('bpc-' + bid);
+  if (!el) return;
+  el.innerHTML =
     '<div style="display:flex;align-items:center;gap:14px;margin-bottom:1.5rem">' +
-    '<div style="width:52px;height:52px;border-radius:14px;background:' + bgColors[n] + ';display:flex;align-items:center;justify-content:center;font-size:24px">' + emojis[n] + '</div>' +
-    '<div><div style="font-size:20px;font-weight:600">' + bName + '</div><div style="color:var(--text-muted);font-size:13px">' + state.bTypes[n] + '</div></div>' +
-    '<div style="margin-left:auto"><button class="btn btn-primary btn-sm" onclick="openModulePicker(\'' + bid + '\')">➕ Module</button></div>' +
+    '<div style="width:52px;height:52px;border-radius:14px;background:'+bg+';display:flex;align-items:center;justify-content:center;font-size:24px">'+emoji+'</div>' +
+    '<div><div style="font-size:20px;font-weight:600">'+bName+'</div><div style="color:var(--text-muted);font-size:13px">'+bType+'</div></div>' +
+    '<div style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="openModulePicker(\''+bid+'\')">+ Module</button>'+delBtn+'</div>' +
     '</div>' + modsHtml;
-
   setTimeout(function() {
     mods.forEach(function(m) {
       if (m.type === 'ca-chart') updateChart(m.id, bid);
@@ -847,74 +971,63 @@ function renderBusinessPage(bid) {
   }, 200);
 }
 
-function openFinanceFor(bName) {
-  var idx = state.bNames.indexOf(bName);
-  var sel = document.getElementById('f-business');
-  if (sel && idx >= 0) sel.selectedIndex = idx;
-  openModal('modal-finance');
-}
-
 function updateAll() {
   var rev = state.finances.filter(function(f) { return f.type === 'Revenu'; }).reduce(function(s,f) { return s+f.montant; }, 0);
-  document.getElementById('m-revenus').textContent = rev.toLocaleString('fr-FR') + ' €';
+  document.getElementById('m-revenus').textContent = rev.toLocaleString('fr-FR') + ' EUR';
   document.getElementById('m-clients').textContent = state.clients.filter(function(c) { return c.statut === 'Actif'; }).length;
   document.getElementById('m-taches').textContent = state.taches.filter(function(t) { return !t.done; }).length;
   document.getElementById('m-notes').textContent = state.notes.length;
 
-  var bRevs = state.bNames.map(function(b) {
+  var allBizNames = getAllBusinessNames();
+  var allColors = ['#7B6EF6','#22C48A','#F06A3A','#3A9EF5','#A855F7','#EC4899','#F59E0B','#06B6D4'];
+  var bRevs = allBizNames.map(function(b) {
     return state.finances.filter(function(f) { return f.business === b && f.type === 'Revenu'; }).reduce(function(s,f) { return s+f.montant; }, 0);
   });
   var maxR = Math.max.apply(null, bRevs) || 1;
-  bRevs.forEach(function(r,i) {
-    var el = document.getElementById('b'+(i+1)+'-rev');
-    if (el) el.textContent = r.toLocaleString('fr-FR') + ' €';
-  });
 
   var barEl = document.getElementById('bar-revenus');
-  if (state.finances.length === 0) {
-    barEl.innerHTML = '<div class="empty-state">Aucune transaction encore</div>';
-  } else {
-    barEl.innerHTML = state.bNames.map(function(b,i) {
-      return '<div class="bar-item"><div class="bar-label"><span>' + b + '</span><strong>' + bRevs[i].toLocaleString('fr-FR') + ' €</strong></div><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(bRevs[i]/maxR*100) + '%;background:' + bColors[i] + '"></div></div></div>';
+  barEl.innerHTML = state.finances.length === 0 ? '<div class="empty-state">Aucune transaction encore</div>' :
+    allBizNames.map(function(b, i) {
+      return '<div class="bar-item"><div class="bar-label"><span>'+b+'</span><strong>'+bRevs[i].toLocaleString('fr-FR')+' EUR</strong></div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(bRevs[i]/maxR*100)+'%;background:'+(allColors[i]||'#7B6EF6')+'"></div></div></div>';
     }).join('');
-  }
 
   var pt = state.taches.filter(function(t) { return !t.done; }).length;
-  document.getElementById('taches-count').textContent = pt + ' tâche' + (pt > 1 ? 's' : '');
-  if (state.taches.length === 0) {
-    document.getElementById('taches-list').innerHTML = '<div class="empty-state">Aucune tâche encore</div>';
-  } else {
-    document.getElementById('taches-list').innerHTML = state.taches.slice(0,5).map(function(t,i) {
-      return '<div class="task-item"><div class="task-check ' + (t.done?'done':'') + '" onclick="toggleTask(' + i + ')"></div><div class="task-content"><div class="task-name ' + (t.done?'done':'') + '">' + t.nom + '</div>' + (t.desc ? '<div class="task-desc">' + t.desc + '</div>' : '') + '<div class="task-meta"><span class="badge ' + pBadge[t.priorite] + '">' + t.priorite + '</span><span class="badge bgr">' + t.business + '</span></div></div></div>';
+  document.getElementById('taches-count').textContent = pt;
+  document.getElementById('taches-list').innerHTML = state.taches.length === 0 ? '<div class="empty-state">Aucune tache encore</div>' :
+    state.taches.slice(0,5).map(function(t,i) {
+      return '<div class="task-item"><div class="task-check '+(t.done?'done':'')+'" onclick="toggleTask('+i+')"></div><div class="task-content"><div class="task-name '+(t.done?'done':'')+'">'+t.nom+'</div>'+(t.desc?'<div class="task-desc">'+t.desc+'</div>':'')+'<div class="task-meta"><span class="badge '+pBadge[t.priorite]+'">'+t.priorite+'</span></div></div></div>';
+    }).join('');
+
+  document.getElementById('clients-table').innerHTML = state.clients.length === 0 ? '<tr><td colspan="4"><div class="empty-state">Aucun client encore</div></td></tr>' :
+    state.clients.slice(0,5).map(function(c) {
+      return '<tr><td><strong>'+c.nom+'</strong></td><td>'+c.business+'</td><td><span class="badge '+sBadge[c.statut]+'">'+c.statut+'</span></td><td><strong>'+c.valeur.toLocaleString('fr-FR')+' EUR</strong></td></tr>';
+    }).join('');
+
+  document.getElementById('clients-table-full').innerHTML = state.clients.length === 0 ? '<tr><td colspan="6"><div class="empty-state">Aucun client encore</div></td></tr>' :
+    state.clients.map(function(c,i) {
+      return '<tr><td><strong>'+c.nom+'</strong></td><td>'+c.business+'</td><td>'+(c.email||'-')+'</td><td><span class="badge '+sBadge[c.statut]+'">'+c.statut+'</span></td><td><strong>'+c.valeur.toLocaleString('fr-FR')+' EUR</strong></td><td><button class="btn btn-danger btn-sm" onclick="deleteClient('+i+')">x</button></td></tr>';
+    }).join('');
+
+  document.getElementById('finances-table').innerHTML = state.finances.length === 0 ? '<tr><td colspan="6"><div class="empty-state">Aucune transaction encore</div></td></tr>' :
+    state.finances.map(function(f,i) {
+      return '<tr><td>'+f.desc+'</td><td>'+f.business+'</td><td><span class="badge '+(f.type==='Revenu'?'bg':'br')+'">'+f.type+'</span></td><td><strong>'+f.montant.toLocaleString('fr-FR')+' EUR</strong></td><td>'+f.date+'</td><td><button class="btn btn-danger btn-sm" onclick="deleteFinance('+i+')">x</button></td></tr>';
+    }).join('');
+
+  document.getElementById('taches-full-list').innerHTML = state.taches.length === 0 ? '<div class="empty-state">Aucune tache encore</div>' :
+    state.taches.map(function(t,i) {
+      return '<div class="task-item"><div class="task-check '+(t.done?'done':'')+'" onclick="toggleTask('+i+')"></div><div class="task-content"><div class="task-name '+(t.done?'done':'')+'">'+t.nom+'</div>'+(t.desc?'<div class="task-desc">'+t.desc+'</div>':'')+'<div class="task-meta"><span class="badge '+pBadge[t.priorite]+'">'+t.priorite+'</span><span class="badge bgr">'+t.business+'</span></div></div><button class="btn btn-danger btn-sm" onclick="deleteTask('+i+')">x</button></div>';
+    }).join('');
+
+  var dc = document.getElementById('dashboard-cards');
+  if (dc) {
+    dc.innerHTML = allBizNames.map(function(b, i) {
+      var bRevC = bRevs[i] || 0;
+      var bgC = ['#EEEDFE','#E1F5EE','#FAECE7','#E6F1FB','#F3E8FF','#FCE7F3','#FEF3C7','#E0F2FE'][i] || '#F0EFFE';
+      var emoji2 = ['&#128717;','&#128705;','&#128188;','&#128295;','&#127978;','&#128295;','&#127979;','&#128181;'][i] || '&#127978;';
+      var bid2 = i < 4 ? 'b'+(i+1) : (state.extraBiz[i-4] ? state.extraBiz[i-4].id : '');
+      return '<div class="business-card" onclick="showPage(\''+bid2+'\',null)"><div class="bcard-icon" style="background:'+bgC+'">'+emoji2+'</div><div class="bcard-name">'+b+'</div><div class="bcard-type">'+(state.bTypes[i]||'Activite')+'</div><div class="bcard-stat"><span>Revenus</span><strong>'+bRevC.toLocaleString('fr-FR')+' EUR</strong></div></div>';
     }).join('');
   }
-
-  var ct = document.getElementById('clients-table');
-  ct.innerHTML = state.clients.length === 0 ? '<tr><td colspan="4"><div class="empty-state">Aucun client encore</div></td></tr>' :
-    state.clients.slice(0,5).map(function(c) {
-      var bi = state.bNames.indexOf(c.business);
-      return '<tr><td><strong>' + c.nom + '</strong></td><td><span class="badge ' + (bBadgeClass[bi]||'bgr') + '">' + c.business + '</span></td><td><span class="badge ' + sBadge[c.statut] + '">' + c.statut + '</span></td><td><strong>' + c.valeur.toLocaleString('fr-FR') + ' €</strong></td></tr>';
-    }).join('');
-
-  var ctf = document.getElementById('clients-table-full');
-  ctf.innerHTML = state.clients.length === 0 ? '<tr><td colspan="6"><div class="empty-state">Aucun client encore</div></td></tr>' :
-    state.clients.map(function(c,i) {
-      var bi = state.bNames.indexOf(c.business);
-      return '<tr><td><strong>' + c.nom + '</strong></td><td><span class="badge ' + (bBadgeClass[bi]||'bgr') + '">' + c.business + '</span></td><td>' + (c.email||'-') + '</td><td><span class="badge ' + sBadge[c.statut] + '">' + c.statut + '</span></td><td><strong>' + c.valeur.toLocaleString('fr-FR') + ' €</strong></td><td><button class="btn btn-danger btn-sm" onclick="deleteClient(' + i + ')">✕</button></td></tr>';
-    }).join('');
-
-  var ft = document.getElementById('finances-table');
-  ft.innerHTML = state.finances.length === 0 ? '<tr><td colspan="6"><div class="empty-state">Aucune transaction encore</div></td></tr>' :
-    state.finances.map(function(f,i) {
-      var bi = state.bNames.indexOf(f.business);
-      return '<tr><td>' + f.desc + '</td><td><span class="badge ' + (bBadgeClass[bi]||'bgr') + '">' + f.business + '</span></td><td><span class="badge ' + (f.type==='Revenu'?'bg':'br') + '">' + f.type + '</span></td><td><strong>' + f.montant.toLocaleString('fr-FR') + ' €</strong></td><td>' + f.date + '</td><td><button class="btn btn-danger btn-sm" onclick="deleteFinance(' + i + ')">✕</button></td></tr>';
-    }).join('');
-
-  var tfl = document.getElementById('taches-full-list');
-  tfl.innerHTML = state.taches.length === 0 ? '<div class="empty-state">Aucune tâche encore</div>' :
-    state.taches.map(function(t,i) {
-      return '<div class="task-item"><div class="task-check ' + (t.done?'done':'') + '" onclick="toggleTask(' + i + ')"></div><div class="task-content"><div class="task-name ' + (t.done?'done':'') + '">' + t.nom + '</div>' + (t.desc ? '<div class="task-desc">' + t.desc + '</div>' : '') + '<div class="task-meta"><span class="badge ' + pBadge[t.priorite] + '">' + t.priorite + '</span><span class="badge bgr">' + t.business + '</span>' + (t.date ? '<span class="badge bgr">' + t.date + '</span>' : '') + '</div></div><button class="btn btn-danger btn-sm" onclick="deleteTask(' + i + ')">✕</button></div>';
-    }).join('');
 }
 
 document.querySelectorAll('.modal-overlay').forEach(function(m) {
@@ -926,7 +1039,8 @@ chartScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.m
 document.head.appendChild(chartScript);
 
 function init() {
-  applyNames();
+  renderSidebar();
+  refreshSelects();
   updateAll();
   renderNotes();
 }
