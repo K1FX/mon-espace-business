@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Espace Business</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f5f4f0;--surface:#fff;--sidebar:#1a1a2e;--sidebar-text:#a0a0b8;--sidebar-active:#fff;--sidebar-hover:#2a2a42;--text:#1a1a2e;--text-muted:#6b6b80;--border:#e8e6e0;--accent1:#7F77DD;--red:#E24B4A;--green:#639922;--radius:12px;--radius-sm:8px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+#login-screen{position:fixed;inset:0;background:var(--sidebar);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:#fff;border-radius:16px;padding:2.5rem;width:340px;text-align:center}
+.login-logo{font-size:42px;margin-bottom:1rem}
+.login-title{font-size:20px;font-weight:600;margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--text-muted);margin-bottom:1.5rem}
+.login-input{width:100%;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:18px;text-align:center;letter-spacing:0.2em;margin-bottom:1rem;outline:none;font-family:'DM Sans',sans-serif}
+.login-input:focus{border-color:var(--accent1)}
+.login-btn{width:100%;padding:12px;background:var(--accent1);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.login-btn:hover{opacity:0.9}
+.login-error{color:var(--red);font-size:13px;margin-top:10px;display:none}
+#app{display:none;flex-direction:row;min-height:100vh}
+.sidebar{width:220px;min-height:100vh;background:var(--sidebar);padding:1.5rem 0;flex-shrink:0;display:flex;flex-direction:column}
+.sidebar-logo{padding:0 1.25rem 1.5rem;border-bottom:1px solid #2a2a42;margin-bottom:1rem}
+.sidebar-logo span{font-size:15px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px}
+.dot{width:28px;height:28px;border-radius:8px;background:var(--accent1);display:flex;align-items:center;justify-content:center;font-size:14px}
+.sidebar-section{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#444466;padding:0.75rem 1.25rem 0.25rem}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:8px 1.25rem;color:var(--sidebar-text);cursor:pointer;font-size:13px;transition:background 0.15s,color 0.15s}
+.sidebar-item:hover,.sidebar-item.active{background:#2a2a42;color:#fff}
+.bdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.main{flex:1;display:flex;flex-direction:column}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between}
+.topbar-title{font-size:15px;font-weight:600}
+.topbar-sub{font-size:12px;color:var(--text-muted);margin-top:1px}
+.topbar-actions{display:flex;gap:8px}
+.btn{padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif}
+.btn-primary{background:var(--accent1);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-muted)}
+.content{flex:1;padding:2rem;overflow-y:auto}
+.page{display:none}
+.page.active{display:block}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.metric-card{background:var(--surface);border-radius:var(--radius);padding:1.1rem 1.25rem;border:1px solid var(--border)}
+.metric-label{font-size:11px;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+.metric-value{font-size:24px;font-weight:600;font-family:'DM Mono',monospace}
+.metric-sub{font-size:11px;color:var(--text-muted);margin-top:4px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem}
+.card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:1.25rem}
+.card-title{font-size:13px;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+.business-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:1.25rem;cursor:pointer;transition:border-color 0.15s,transform 0.15s}
+.business-card:hover{border-color:var(--accent1);transform:translateY(-2px)}
+.bcard-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px}
+.bcard-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.bcard-type{font-size:12px;color:var(--text-muted);margin-bottom:12px}
+.bcard-stat{display:flex;justify-content:space-between;font-size:12px;padding-top:10px;border-top:1px solid var(--border);color:var(--text-muted)}
+.bar-wrap{display:flex;flex-direction:column;gap:12px}
+.bar-item{display:flex;flex-direction:column;gap:5px}
+.bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)}
+.bar-track{height:6px;background:var(--bg);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;padding:0 12px 10px 0;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:500}
+.bg{background:#EAF3DE;color:#3B6D11}.ba{background:#FAEEDA;color:#854F0B}.br{background:#FCEBEB;color:#A32D2D}.bb{background:#E6F1FB;color:#185FA5}.bp{background:#EEEDFE;color:#3C3489}.bgr{background:#F1EFE8;color:#5F5E5A}
+.task-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.task-item:last-child{border-bottom:none}
+.task-check{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer}
+.task-check.done{background:var(--green);border-color:var(--green)}
+.task-name{flex:1}
+.task-name.done{text-decoration:line-through;color:var(--text-muted)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius);padding:1.5rem;width:440px;max-width:95vw}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center}
+.modal-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:16px;color:var(--text-muted)}
+.form-group{margin-bottom:1rem}
+.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em}
+.form-input,.form-select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);outline:none}
+.form-input:focus,.form-select:focus{border-color:var(--accent1)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
+.empty-state{text-align:center;padding:2rem;color:var(--text-muted);font-size:13px}
+
+
+
+
+@media (max-width: 768px) {
+  body { flex-direction: column; }
+  #app { flex-direction: column !important; }
+  .sidebar { 
+    width: 100% !important; 
+    min-height: auto !important; 
+    flex-direction: row !important; 
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding: 8px !important;
+    gap: 4px;
+  }
+  .sidebar-logo, .sidebar-section { display: none !important; }
+  .sidebar-item { 
+    padding: 6px 12px !important; 
+    font-size: 11px !important; 
+    white-space: nowrap !important;
+    border-radius: 20px !important;
+    flex-shrink: 0 !important;
+  }
+  .bdot { width: 6px !important; height: 6px !important; }
+  .main { width: 100% !important; min-width: 0 !important; }
+  .topbar { 
+    padding: 8px 12px !important; 
+    height: auto !important; 
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  .topbar-actions { flex-wrap: wrap !important; gap: 4px !important; }
+  .btn { padding: 5px 8px !important; font-size: 11px !important; }
+  .content { padding: 12px !important; }
+  .metrics-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+  .grid-2, .grid-4 { grid-template-columns: 1fr !important; gap: 8px !important; }
+  .metric-value { font-size: 18px !important; }
+  table { font-size: 11px !important; }
+  th, td { padding: 6px 4px !important; }
+  .modal { width: 95vw !important; padding: 1rem !important; }
+  .topbar-title { font-size: 14px !important; }
+  .topbar-sub { font-size: 11px !important; }
+}
+
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">🏢</div>
+    <div class="login-title">Mon Espace Business</div>
+    <div class="login-sub">Entre ton mot de passe pour accéder</div>
+    <input class="login-input" type="password" id="pwd-input" placeholder="••••••">
+    <button class="login-btn" id="login-btn">Accéder</button>
+    <div class="login-error" id="pwd-error">Mot de passe incorrect ❌</div>
+  </div>
+</div>
+
+<div id="app">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><span><div class="dot">🏢</div> Mon Espace</span></div>
+    <div class="sidebar-section">Navigation</div>
+    <div class="sidebar-item active" onclick="showPage('dashboard',this)">📊 Tableau de bord</div>
+    <div class="sidebar-item" onclick="showPage('finances',this)">💰 Finances</div>
+    <div class="sidebar-item" onclick="showPage('clients',this)">👥 Clients</div>
+    <div class="sidebar-item" onclick="showPage('taches',this)">✅ Tâches</div>
+    <div class="sidebar-item" onclick="showPage('documents',this)">📁 Documents</div>
+    <div class="sidebar-section" style="margin-top:1rem">Mes Business</div>
+    <div class="sidebar-item" onclick="showPage('b1',this)"><div class="bdot" style="background:#7F77DD"></div> Business 1</div>
+    <div class="sidebar-item" onclick="showPage('b2',this)"><div class="bdot" style="background:#1D9E75"></div> Business 2</div>
+    <div class="sidebar-item" onclick="showPage('b3',this)"><div class="bdot" style="background:#D85A30"></div> Business 3</div>
+    <div class="sidebar-item" onclick="showPage('b4',this)"><div class="bdot" style="background:#378ADD"></div> Business 4</div>
+  </nav>
+  <div class="main">
+    <div class="topbar">
+      <div><div class="topbar-title" id="topbar-title">Tableau de bord</div><div class="topbar-sub" id="topbar-sub">Vue d'ensemble de tous tes business</div></div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" onclick="openModal('modal-task')">+ Tâche</button>
+        <button class="btn btn-ghost" onclick="openModal('modal-client')">+ Client</button>
+        <button class="btn btn-primary" onclick="openModal('modal-finance')">+ Transaction</button>
+      </div>
+    </div>
+    <div class="content">
+      <div id="page-dashboard" class="page active">
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">Revenus ce mois</div><div class="metric-value" id="m-revenus">0 €</div><div class="metric-sub">Total toutes activités</div></div>
+          <div class="metric-card"><div class="metric-label">Clients actifs</div><div class="metric-value" id="m-clients">0</div><div class="metric-sub">Tous business</div></div>
+          <div class="metric-card"><div class="metric-label">Tâches en cours</div><div class="metric-value" id="m-taches">0</div><div class="metric-sub">À compléter</div></div>
+          <div class="metric-card"><div class="metric-label">Documents</div><div class="metric-value" id="m-docs">0</div><div class="metric-sub">Fichiers enregistrés</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-title">Revenus par business</div><div class="bar-wrap" id="bar-revenus"><div class="empty-state">Aucune transaction encore</div></div></div>
+          <div class="card"><div class="card-title">Tâches prioritaires <span style="font-size:11px;color:var(--text-muted);font-weight:400" id="taches-count">0 tâche</span></div><div id="taches-list"><div class="empty-state">Aucune tâche encore</div></div></div>
+        </div>
+        <div class="card"><div class="card-title">Clients récents</div><table><thead><tr><th>Nom</th><th>Business</th><th>Statut</th><th>Valeur</th></tr></thead><tbody id="clients-table"><tr><td colspan="4"><div class="empty-state">Aucun client encore</div></td></tr></tbody></table></div>
+        <div class="grid-4" style="margin-top:1rem">
+          <div class="business-card" onclick="showPage('b1',null)"><div class="bcard-icon" style="background:#EEEDFE">🛍️</div><div class="bcard-name">Business 1</div><div class="bcard-type">E-commerce</div><div class="bcard-stat"><span>Revenus</span><strong id="b1-rev">0 €</strong></div></div>
+          <div class="business-card" onclick="showPage('b2',null)"><div class="bcard-icon" style="background:#E1F5EE">🛒</div><div class="bcard-name">Business 2</div><div class="bcard-type">E-commerce</div><div class="bcard-stat"><span>Revenus</span><strong id="b2-rev">0 €</strong></div></div>
+          <div class="business-card" onclick="showPage('b3',null)"><div class="bcard-icon" style="background:#FAECE7">💼</div><div class="bcard-name">Business 3</div><div class="bcard-type">Freelance</div><div class="bcard-stat"><span>Revenus</span><strong id="b3-rev">0 €</strong></div></div>
+          <div class="business-card" onclick="showPage('b4',null)"><div class="bcard-icon" style="background:#E6F1FB">🔧</div><div class="bcard-name">Business 4</div><div class="bcard-type">Services</div><div class="bcard-stat"><span>Revenus</span><strong id="b4-rev">0 €</strong></div></div>
+        </div>
+      </div>
+      <div id="page-finances" class="page"><div class="card"><div class="card-title">Toutes les transactions <button class="btn btn-primary" style="font-size:12px;padding:5px 10px" onclick="openModal('modal-finance')">+ Ajouter</button></div><table><thead><tr><th>Description</th><th>Business</th><th>Type</th><th>Montant</th><th>Date</th></tr></thead><tbody id="finances-table"><tr><td colspan="5"><div class="empty-state">Aucune transaction encore</div></td></tr></tbody></table></div></div>
+      <div id="page-clients" class="page"><div class="card"><div class="card-title">Tous les clients <button class="btn btn-primary" style="font-size:12px;padding:5px 10px" onclick="openModal('modal-client')">+ Ajouter</button></div><table><thead><tr><th>Nom</th><th>Business</th><th>Email</th><th>Téléphone</th><th>Statut</th><th>Valeur</th></tr></thead><tbody id="clients-table-full"><tr><td colspan="6"><div class="empty-state">Aucun client encore</div></td></tr></tbody></table></div></div>
+      <div id="page-taches" class="page"><div class="card"><div class="card-title">Toutes les tâches <button class="btn btn-primary" style="font-size:12px;padding:5px 10px" onclick="openModal('modal-task')">+ Ajouter</button></div><table><thead><tr><th>Tâche</th><th>Business</th><th>Priorité</th><th>Statut</th><th>Échéance</th></tr></thead><tbody id="taches-table"><tr><td colspan="5"><div class="empty-state">Aucune tâche encore</div></td></tr></tbody></table></div></div>
+      <div id="page-documents" class="page"><div class="card"><div class="card-title">Documents <button class="btn btn-primary" style="font-size:12px;padding:5px 10px" onclick="openModal('modal-doc')">+ Ajouter</button></div><table><thead><tr><th>Nom</th><th>Business</th><th>Type</th><th>Date</th></tr></thead><tbody id="docs-table"><tr><td colspan="4"><div class="empty-state">Aucun document encore</div></td></tr></tbody></table></div></div>
+      <div id="page-b1" class="page"><div id="bpc-b1"></div></div>
+      <div id="page-b2" class="page"><div id="bpc-b2"></div></div>
+      <div id="page-b3" class="page"><div id="bpc-b3"></div></div>
+      <div id="page-b4" class="page"><div id="bpc-b4"></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-finance" class="modal-overlay"><div class="modal"><div class="modal-title">Nouvelle transaction <button class="modal-close" onclick="closeModal('modal-finance')">✕</button></div><div class="form-group"><label class="form-label">Description</label><input class="form-input" id="f-desc" placeholder="ex: Vente produit X"></div><div class="form-group"><label class="form-label">Business</label><select class="form-select" id="f-business"><option>Business 1</option><option>Business 2</option><option>Business 3</option><option>Business 4</option></select></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="f-type"><option>Revenu</option><option>Dépense</option></select></div><div class="form-group"><label class="form-label">Montant (€)</label><input class="form-input" id="f-montant" type="number" placeholder="0"></div><div class="form-group"><label class="form-label">Date</label><input class="form-input" id="f-date" type="date"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-finance')">Annuler</button><button class="btn btn-primary" onclick="saveFinance()">Enregistrer</button></div></div></div>
+<div id="modal-client" class="modal-overlay"><div class="modal"><div class="modal-title">Nouveau client <button class="modal-close" onclick="closeModal('modal-client')">✕</button></div><div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="c-nom" placeholder="Prénom Nom"></div><div class="form-group"><label class="form-label">Business</label><select class="form-select" id="c-business"><option>Business 1</option><option>Business 2</option><option>Business 3</option><option>Business 4</option></select></div><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="c-email" type="email"></div><div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" id="c-tel"></div><div class="form-group"><label class="form-label">Statut</label><select class="form-select" id="c-statut"><option>Actif</option><option>En attente</option><option>Inactif</option></select></div><div class="form-group"><label class="form-label">Valeur (€)</label><input class="form-input" id="c-valeur" type="number" placeholder="0"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-client')">Annuler</button><button class="btn btn-primary" onclick="saveClient()">Enregistrer</button></div></div></div>
+<div id="modal-task" class="modal-overlay"><div class="modal"><div class="modal-title">Nouvelle tâche <button class="modal-close" onclick="closeModal('modal-task')">✕</button></div><div class="form-group"><label class="form-label">Tâche</label><input class="form-input" id="t-nom" placeholder="ex: Relancer client X"></div><div class="form-group"><label class="form-label">Business</label><select class="form-select" id="t-business"><option>Business 1</option><option>Business 2</option><option>Business 3</option><option>Business 4</option></select></div><div class="form-group"><label class="form-label">Priorité</label><select class="form-select" id="t-priorite"><option>Urgent</option><option>Haute</option><option>Normale</option><option>Basse</option></select></div><div class="form-group"><label class="form-label">Échéance</label><input class="form-input" id="t-date" type="date"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-task')">Annuler</button><button class="btn btn-primary" onclick="saveTask()">Enregistrer</button></div></div></div>
+<div id="modal-doc" class="modal-overlay"><div class="modal"><div class="modal-title">Nouveau document <button class="modal-close" onclick="closeModal('modal-doc')">✕</button></div><div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="d-nom" placeholder="ex: Contrat client X"></div><div class="form-group"><label class="form-label">Business</label><select class="form-select" id="d-business"><option>Business 1</option><option>Business 2</option><option>Business 3</option><option>Business 4</option></select></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="d-type"><option>Contrat</option><option>Facture</option><option>Devis</option><option>Autre</option></select></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-doc')">Annuler</button><button class="btn btn-primary" onclick="saveDoc()">Enregistrer</button></div></div></div>
+
+<script>
+document.getElementById('login-btn').addEventListener('click', checkPwd);
+document.getElementById('pwd-input').addEventListener('keydown', function(e){ if(e.key==='Enter') checkPwd(); });
+
+function checkPwd(){
+  var val = document.getElementById('pwd-input').value;
+  if(val === '907590'){
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    sessionStorage.setItem('auth','1');
+    updateAll();
+  } else {
+    document.getElementById('pwd-error').style.display = 'block';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+  }
+}
+
+if(sessionStorage.getItem('auth') === '1'){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+}
+
+var state = {
+  finances: JSON.parse(localStorage.getItem('finances')||'[]'),
+  clients: JSON.parse(localStorage.getItem('clients')||'[]'),
+  taches: JSON.parse(localStorage.getItem('taches')||'[]'),
+  docs: JSON.parse(localStorage.getItem('docs')||'[]')
+};
+
+var bColors = {'Business 1':'#7F77DD','Business 2':'#1D9E75','Business 3':'#D85A30','Business 4':'#378ADD'};
+var bBadge = {'Business 1':'bp','Business 2':'bg','Business 3':'br','Business 4':'bb'};
+var pBadge = {'Urgent':'br','Haute':'ba','Normale':'bb','Basse':'bgr'};
+var sBadge = {'Actif':'bg','En attente':'ba','Inactif':'bgr'};
+var pagesInfo = {dashboard:'Tableau de bord',finances:'Finances',clients:'Clients',taches:'Tâches',documents:'Documents',b1:'Business 1',b2:'Business 2',b3:'Business 3',b4:'Business 4'};
+var subsInfo = {dashboard:"Vue d'ensemble de tous tes business",finances:'Toutes tes transactions',clients:'Tous tes clients',taches:'Toutes tes tâches',documents:'Tous tes documents',b1:'E-commerce',b2:'E-commerce',b3:'Freelance',b4:'Services'};
+
+function save(){
+  localStorage.setItem('finances',JSON.stringify(state.finances));
+  localStorage.setItem('clients',JSON.stringify(state.clients));
+  localStorage.setItem('taches',JSON.stringify(state.taches));
+  localStorage.setItem('docs',JSON.stringify(state.docs));
+}
+
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.sidebar-item').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('topbar-title').textContent = pagesInfo[id]||id;
+  document.getElementById('topbar-sub').textContent = subsInfo[id]||'';
+  if(id.startsWith('b')) renderBusiness(id);
+  updateAll();
+}
+
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+function saveFinance(){
+  var desc = document.getElementById('f-desc').value.trim();
+  if(!desc) return;
+  state.finances.push({desc:desc, business:document.getElementById('f-business').value, type:document.getElementById('f-type').value, montant:parseFloat(document.getElementById('f-montant').value)||0, date:document.getElementById('f-date').value||new Date().toISOString().split('T')[0]});
+  save(); updateAll(); closeModal('modal-finance');
+  document.getElementById('f-desc').value=''; document.getElementById('f-montant').value='';
+}
+
+function saveClient(){
+  var nom = document.getElementById('c-nom').value.trim();
+  if(!nom) return;
+  state.clients.push({nom:nom, business:document.getElementById('c-business').value, email:document.getElementById('c-email').value, tel:document.getElementById('c-tel').value, statut:document.getElementById('c-statut').value, valeur:parseFloat(document.getElementById('c-valeur').value)||0});
+  save(); updateAll(); closeModal('modal-client');
+  document.getElementById('c-nom').value=''; document.getElementById('c-email').value=''; document.getElementById('c-tel').value=''; document.getElementById('c-valeur').value='';
+}
+
+function saveTask(){
+  var nom = document.getElementById('t-nom').value.trim();
+  if(!nom) return;
+  state.taches.push({nom:nom, business:document.getElementById('t-business').value, priorite:document.getElementById('t-priorite').value, date:document.getElementById('t-date').value, done:false});
+  save(); updateAll(); closeModal('modal-task');
+  document.getElementById('t-nom').value='';
+}
+
+function saveDoc(){
+  var nom = document.getElementById('d-nom').value.trim();
+  if(!nom) return;
+  state.docs.push({nom:nom, business:document.getElementById('d-business').value, type:document.getElementById('d-type').value, date:new Date().toISOString().split('T')[0]});
+  save(); updateAll(); closeModal('modal-doc');
+  document.getElementById('d-nom').value='';
+}
+
+function toggleTask(i){state.taches[i].done=!state.taches[i].done; save(); updateAll();}
+
+function updateAll(){
+  var rev = state.finances.filter(function(f){return f.type==='Revenu';}).reduce(function(s,f){return s+f.montant;},0);
+  document.getElementById('m-revenus').textContent = rev.toLocaleString('fr-FR')+' €';
+  document.getElementById('m-clients').textContent = state.clients.filter(function(c){return c.statut==='Actif';}).length;
+  document.getElementById('m-taches').textContent = state.taches.filter(function(t){return !t.done;}).length;
+  document.getElementById('m-docs').textContent = state.docs.length;
+
+  var bs = ['Business 1','Business 2','Business 3','Business 4'];
+  var bRevs = {};
+  bs.forEach(function(b){ bRevs[b] = state.finances.filter(function(f){return f.business===b&&f.type==='Revenu';}).reduce(function(s,f){return s+f.montant;},0); });
+  var maxR = Math.max.apply(null, bs.map(function(b){return bRevs[b];})) || 1;
+  ['b1','b2','b3','b4'].forEach(function(bid,i){ document.getElementById(bid+'-rev').textContent = bRevs['Business '+(i+1)].toLocaleString('fr-FR')+' €'; });
+
+  var barEl = document.getElementById('bar-revenus');
+  barEl.innerHTML = state.finances.length===0 ? '<div class="empty-state">Aucune transaction encore</div>' : bs.map(function(b){return '<div class="bar-item"><div class="bar-label"><span>'+b+'</span><strong>'+bRevs[b].toLocaleString('fr-FR')+' €</strong></div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(bRevs[b]/maxR*100)+'%;background:'+bColors[b]+'"></div></div></div>';}).join('');
+
+  var pt = state.taches.filter(function(t){return !t.done;}).length;
+  document.getElementById('taches-count').textContent = pt+' tâche'+(pt>1?'s':'');
+  document.getElementById('taches-list').innerHTML = state.taches.length===0 ? '<div class="empty-state">Aucune tâche encore</div>' : state.taches.slice(0,5).map(function(t,i){return '<div class="task-item"><div class="task-check '+(t.done?'done':'')+'" onclick="toggleTask('+i+')"></div><span class="task-name '+(t.done?'done':'')+'">'+t.nom+'</span><span class="badge '+pBadge[t.priorite]+'">'+t.priorite+'</span></div>';}).join('');
+
+  document.getElementById('clients-table').innerHTML = state.clients.length===0 ? '<tr><td colspan="4"><div class="empty-state">Aucun client encore</div></td></tr>' : state.clients.slice(0,5).map(function(c){return '<tr><td><strong>'+c.nom+'</strong></td><td><span class="badge '+bBadge[c.business]+'">'+c.business+'</span></td><td><span class="badge '+sBadge[c.statut]+'">'+c.statut+'</span></td><td><strong>'+c.valeur.toLocaleString('fr-FR')+' €</strong></td></tr>';}).join('');
+  document.getElementById('clients-table-full').innerHTML = state.clients.length===0 ? '<tr><td colspan="6"><div class="empty-state">Aucun client encore</div></td></tr>' : state.clients.map(function(c){return '<tr><td><strong>'+c.nom+'</strong></td><td><span class="badge '+bBadge[c.business]+'">'+c.business+'</span></td><td>'+( c.email||'-')+'</td><td>'+(c.tel||'-')+'</td><td><span class="badge '+sBadge[c.statut]+'">'+c.statut+'</span></td><td><strong>'+c.valeur.toLocaleString('fr-FR')+' €</strong></td></tr>';}).join('');
+  document.getElementById('finances-table').innerHTML = state.finances.length===0 ? '<tr><td colspan="5"><div class="empty-state">Aucune transaction encore</div></td></tr>' : state.finances.map(function(f){return '<tr><td>'+f.desc+'</td><td><span class="badge '+bBadge[f.business]+'">'+f.business+'</span></td><td><span class="badge '+(f.type==='Revenu'?'bg':'br')+'">'+f.type+'</span></td><td><strong>'+f.montant.toLocaleString('fr-FR')+' €</strong></td><td>'+f.date+'</td></tr>';}).join('');
+  document.getElementById('taches-table').innerHTML = state.taches.length===0 ? '<tr><td colspan="5"><div class="empty-state">Aucune tâche encore</div></td></tr>' : state.taches.map(function(t,i){return '<tr><td><strong>'+t.nom+'</strong></td><td><span class="badge '+bBadge[t.business]+'">'+t.business+'</span></td><td><span class="badge '+pBadge[t.priorite]+'">'+t.priorite+'</span></td><td><span class="badge '+(t.done?'bg':'bb')+'">'+(t.done?'Fait':'En cours')+'</span></td><td>'+(t.date||'-')+'</td></tr>';}).join('');
+  document.getElementById('docs-table').innerHTML = state.docs.length===0 ? '<tr><td colspan="4"><div class="empty-state">Aucun document encore</div></td></tr>' : state.docs.map(function(d){return '<tr><td><strong>'+d.nom+'</strong></td><td><span class="badge '+bBadge[d.business]+'">'+d.business+'</span></td><td>'+d.type+'</td><td>'+d.date+'</td></tr>';}).join('');
+}
+
+function renderBusiness(bid){
+  var n = bid.replace('b','');
+  var bName = 'Business '+n;
+  var emojis = {'1':'🛍️','2':'🛒','3':'💼','4':'🔧'};
+  var types = {'1':'E-commerce','2':'E-commerce','3':'Freelance','4':'Services'};
+  var mc = state.clients.filter(function(c){return c.business===bName;});
+  var mt = state.taches.filter(function(t){return t.business===bName;});
+  var mr = state.finances.filter(function(f){return f.business===bName&&f.type==='Revenu';}).reduce(function(s,f){return s+f.montant;},0);
+  var md = state.finances.filter(function(f){return f.business===bName&&f.type==='Dépense';}).reduce(function(s,f){return s+f.montant;},0);
+  document.getElementById('bpc-'+bid).innerHTML = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem"><div style="width:48px;height:48px;border-radius:12px;background:#EEEDFE;display:flex;align-items:center;justify-content:center;font-size:22px">'+emojis[n]+'</div><div><div style="font-size:20px;font-weight:600">'+bName+'</div><div style="color:var(--text-muted);font-size:13px">'+types[n]+'</div></div></div><div class="metrics-grid" style="grid-template-columns:repeat(3,1fr)"><div class="metric-card"><div class="metric-label">Revenus</div><div class="metric-value">'+mr.toLocaleString('fr-FR')+' €</div></div><div class="metric-card"><div class="metric-label">Dépenses</div><div class="metric-value">'+md.toLocaleString('fr-FR')+' €</div></div><div class="metric-card"><div class="metric-label">Clients</div><div class="metric-value">'+mc.length+'</div></div></div><div class="grid-2"><div class="card"><div class="card-title">Clients</div>'+(mc.length===0?'<div class="empty-state">Aucun client</div>':'<table><thead><tr><th>Nom</th><th>Statut</th><th>Valeur</th></tr></thead><tbody>'+mc.map(function(c){return '<tr><td>'+c.nom+'</td><td><span class="badge '+sBadge[c.statut]+'">'+c.statut+'</span></td><td>'+c.valeur.toLocaleString('fr-FR')+' €</td></tr>';}).join('')+'</tbody></table>')+'</div><div class="card"><div class="card-title">Tâches</div>'+(mt.length===0?'<div class="empty-state">Aucune tâche</div>':mt.map(function(t){var i=state.taches.indexOf(t);return '<div class="task-item"><div class="task-check '+(t.done?'done':'')+'" onclick="toggleTask('+i+')"></div><span class="task-name '+(t.done?'done':'')+'">'+t.nom+'</span><span class="badge '+pBadge[t.priorite]+'">'+t.priorite+'</span></div>';}).join(''))+'</div></div>';
+}
+
+document.querySelectorAll('.modal-overlay').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open');});});
+</script>
+</body>
+</html>
